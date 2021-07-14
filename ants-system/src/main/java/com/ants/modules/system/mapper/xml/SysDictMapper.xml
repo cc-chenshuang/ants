@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.modules.system.mapper.SysDictMapper">
+
+    <select id="getDictItemByCode" resultType="com.ants.modules.system.vo.DictModel" parameterType="string">
+        SELECT
+            s.item_value AS "value",
+            s.item_text AS "text"
+        FROM
+            sys_dict_item s
+        WHERE
+            dict_id = ( SELECT id FROM sys_dict WHERE dict_code = #{dictCode} )
+        ORDER BY
+            s.sort_order ASC
+    </select>
+</mapper>

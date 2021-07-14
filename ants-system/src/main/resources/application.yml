@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: dev
+#    active: prod
+
+logging:
+  config: classpath:logback-spring.xml
+  level:
+    dao: debug
+    org:
+      mybatis: debug
