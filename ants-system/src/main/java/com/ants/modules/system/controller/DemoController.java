@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Api(tags = "集成MyBatisPlus测试接口")
@@ -66,7 +68,9 @@ public class DemoController {
 
         // 查询所有令牌Session会话
         List<String> list2 = StpUtil.searchTokenSessionId("", 0, 10);
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("sysLoginModel",sysLoginModel);
+        map.put("roles",new String[]{"admin"});
         return Result.ok(sysLoginModel);
     }
 
