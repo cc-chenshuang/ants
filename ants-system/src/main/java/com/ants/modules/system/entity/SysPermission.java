@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -156,27 +157,6 @@ public class SysPermission implements Serializable {
     private boolean internalOrExternal;
 	/*update_end author:wuxianquan date:20190908 for:实体增加字段 */
 
-    public SysPermission() {
-
-    }
-    public SysPermission(boolean index) {
-    	if(index) {
-    		this.id = "9502685863ab87f0ad1134142788a385";
-        	this.name="首页";
-        	this.component="dashboard/Analysis";
-        	this.componentName="dashboard-analysis";
-        	this.url="/dashboard/analysis";
-        	this.icon="home";
-        	this.menuType=0;
-        	this.sortNo=0.0;
-        	this.ruleFlag=0;
-        	this.delFlag=0;
-        	this.alwaysShow=false;
-        	this.route=true;
-        	this.keepAlive=true;
-        	this.leaf=true;
-        	this.hidden=false;
-    	}
-
-    }
+	@TableField(exist = false)
+	private List<SysPermission> children;
 }

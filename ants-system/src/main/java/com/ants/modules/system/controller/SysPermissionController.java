@@ -6,6 +6,7 @@ import com.ants.common.constant.CommonConstant;
 import com.ants.common.result.Result;
 import com.ants.common.utils.MD5Util;
 import com.ants.common.utils.oConvertUtils;
+import com.ants.modules.system.MenuUtils;
 import com.ants.modules.system.entity.SysPermission;
 import com.ants.modules.system.service.ISysPermissionService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -30,6 +31,31 @@ public class SysPermissionController {
 
     @Autowired
     private ISysPermissionService sysPermissionService;
+
+    /**
+     * 查询用户拥有的菜单权限和按钮权限（根据TOKEN）
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getPermissionByToken", method = RequestMethod.GET)
+    public Result<?> getPermissionByToken(@RequestParam(name = "token", required = true) String token) {
+        Result<List<SysPermission>> result = new Result<List<SysPermission>>();
+        try {
+            if (oConvertUtils.isEmpty(token)) {
+                return Result.error("TOKEN不允许为空！");
+            }
+            log.info(" ------ 通过令牌获取用户拥有的访问菜单 ---- TOKEN ------ " + token);
+//			String username = JwtUtil.getUsername(token);
+            List<SysPermission> sysPermissions = sysPermissionService.queryByUser("admin");
+            List<SysPermission> childPerms = MenuUtils.getChildPerms(sysPermissions);
+            result.setResult(childPerms);
+            result.success("查询成功");
+        } catch (Exception e) {
+            result.error500("查询失败:" + e.getMessage());
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
 
     /**
      * 查询用户拥有的菜单权限和按钮权限（根据TOKEN）
@@ -66,7 +92,7 @@ public class SysPermissionController {
             json.put("auth", authjsonArray);
             //全部权限配置集合（按钮权限，访问权限）
             json.put("allAuth", allauthjsonArray);
-            result.setData(json);
+            result.setResult(json);
             result.success("查询成功");
         } catch (Exception e) {
             result.error500("查询失败:" + e.getMessage());
@@ -266,11 +292,12 @@ public class SysPermissionController {
     }
 
     /**
-     *  获取权限JSON数组
+     * 获取权限JSON数组
+     *
      * @param jsonArray
      * @param allList
      */
-    private void getAllAuthJsonArray(JSONArray jsonArray,List<SysPermission> allList) {
+    private void getAllAuthJsonArray(JSONArray jsonArray, List<SysPermission> allList) {
         JSONObject json = null;
         for (SysPermission permission : allList) {
             json = new JSONObject();

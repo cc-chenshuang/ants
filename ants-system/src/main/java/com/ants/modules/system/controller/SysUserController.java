@@ -61,7 +61,7 @@ public class SysUserController {
         IPage<SysUser> pageList = sysUserService.page(page, queryWrapper);
 
         result.setSuccess(true);
-        result.setData(pageList);
+        result.setResult(pageList);
         log.info(pageList.toString());
         return result;
     }

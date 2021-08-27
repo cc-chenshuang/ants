@@ -71,6 +71,8 @@ public class DemoController {
         Map<String, Object> map = new HashMap<>();
         map.put("sysLoginModel",sysLoginModel);
         map.put("roles",new String[]{"admin"});
+
+        map.put("sysMenu",new String[]{"admin"});
         return Result.ok(sysLoginModel);
     }
 
@@ -107,7 +109,7 @@ public class DemoController {
             redisUtil.set(realKey, lowerCaseCode, 60);
             String base64 = RandImageUtil.generate(code);
             res.setSuccess(true);
-            res.setData(base64);
+            res.setResult(base64);
         } catch (Exception e) {
             res.error500("获取验证码出错" + e.getMessage());
             e.printStackTrace();

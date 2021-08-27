@@ -43,7 +43,7 @@ public class Result<T> implements Serializable {
      * 返回数据对象 data
      */
     @ApiModelProperty(value = "返回数据对象")
-    private T data;
+    private T result;
 
     /**
      * 时间戳
@@ -83,7 +83,7 @@ public class Result<T> implements Serializable {
         Result<Object> r = new Result<Object>();
         r.setSuccess(true);
         r.setCode(CommonConstant.SC_OK_200);
-        r.setData(data);
+        r.setResult(data);
         return r;
     }
 

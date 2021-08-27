@@ -45,7 +45,7 @@ public class ActuatorRedisController {
     public Map<String, Object> getMemoryInfo() throws Exception {
         return redisService.getMemoryInfo();
     }
-    
+
   //update-begin--Author:zhangweijian  Date:20190425 for：获取磁盘信息
   	/**
   	 * @功能：获取磁盘信息
@@ -63,7 +63,7 @@ public class ActuatorRedisController {
   	        File[] fs = File.listRoots();
   	        log.info("查询磁盘信息:"+fs.length+"个");
   	        List<Map<String,Object>> list = new ArrayList<>();
-  	        
+
   	        for (int i = 0; i < fs.length; i++) {
   	        	if(fs[i].getTotalSpace()==0) {
   	        		continue;
@@ -76,7 +76,7 @@ public class ActuatorRedisController {
   	        	list.add(map);
   	        	log.info(map.toString());
   	        }
-  	        res.setData(list);
+  	        res.setResult(list);
   	        res.success("查询成功");
   		} catch (Exception e) {
   			res.error500("查询失败"+e.getMessage());
