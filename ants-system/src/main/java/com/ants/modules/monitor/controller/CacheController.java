@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import com.ants.common.utils.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisCallback;

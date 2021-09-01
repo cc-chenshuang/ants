@@ -3,8 +3,8 @@ package com.ants.modules.system.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CommonConstant;
-import com.ants.common.query.QueryGenerator;
-import com.ants.common.result.Result;
+import com.ants.common.system.query.QueryGenerator;
+import com.ants.common.system.result.Result;
 import com.ants.common.utils.PasswordUtil;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.SysUser;
@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * TODO
@@ -62,6 +59,7 @@ public class SysUserController {
 
         result.setSuccess(true);
         result.setResult(pageList);
+        result.setCode(200);
         log.info(pageList.toString());
         return result;
     }

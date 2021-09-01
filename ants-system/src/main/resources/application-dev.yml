@@ -24,24 +24,24 @@ druid:
     user_name: ants
     password: ants_123
 #监控配置
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  endpoint:
-    health:
-      show-details: ALWAYS
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#  endpoint:
+#    health:
+#      show-details: ALWAYS
 spring:
-  application:
-    name: ants-admin-client
-  boot:
-    admin:
-      client:
-        url: http://39.107.111.110:8769
-#        url: http://127.0.0.1:8769
-        username: admin    #对应server端的账号密码，不配置就监控不到这个client。
-        password: admin
+#  application:
+#    name: ants-admin-client
+#  boot:
+#    admin:
+#      client:
+#        url: http://39.107.111.110:8769
+##        url: http://127.0.0.1:8769
+#        username: admin    #对应server端的账号密码，不配置就监控不到这个client。
+#        password: admin
   servlet:
     multipart:
       max-file-size: 10MB
@@ -194,12 +194,12 @@ ants:
   uploadType: local
   path:
     #文件上传根目录 设置
-    upload: D://ants
+    upload: D://ants-file
     #webapp文件路径
-    webapp: D://ants
+    webapp: D://ants-file
   # minio文件上传
   minio:
-    minio_url: http://39.105.0.208:9000
+    minio_url: http://39.107.111.110:9000
     minio_name: minioadmin
     minio_pass: minioadmin
     bucketName: ants-file
@@ -212,18 +212,18 @@ ants:
     branch: master                                   # 分支名
 
 # Sa-Token配置
-#sa-token:
-#  # token名称 (同时也是cookie名称)
-#  token-name: Ants-Token
-#  # token有效期，单位s 默认30天, -1代表永不过期
-#  timeout: 150
-#  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
-#  activity-timeout: -1
-#  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
-#  is-concurrent: false
-#  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
-#  is-share: false
-#  # token风格
-#  token-style: random-128
-#  # 是否输出操作日志
-#  is-log: false
+sa-token:
+  # token名称 (同时也是cookie名称)
+  token-name: Ants-Token
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 3600
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: 1800
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: false
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: random-128
+  # 是否输出操作日志
+  is-log: false

@@ -30,7 +30,7 @@ public class SysLoginModel {
     private String token;
     private String[] roles = {"admin"};
     private String introduction = "ants";
-    private String avatar = "http%3A%2F%2Fgss0.baidu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1632395777&t=831d383e9027dcfa7ad15e13d322c0ee";
+    private String avatar = "http://39.107.111.110:9000/ants-file/414ea39a-216a-4322-9fa5-83d81388d4c1.jpg";
     private String name = "Ants";
 
 }

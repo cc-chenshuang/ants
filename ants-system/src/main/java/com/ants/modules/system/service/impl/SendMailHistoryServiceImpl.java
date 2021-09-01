@@ -1,9 +1,7 @@
 package com.ants.modules.system.service.impl;
 
 import cn.hutool.http.HtmlUtil;
-import com.ants.modules.file.entity.AntsFile;
-import com.ants.modules.file.service.AntsFileService;
-import com.ants.modules.file.util.MinioUtil;
+import com.ants.common.utils.MinioUtil;
 import com.ants.modules.system.entity.MailConfig;
 import com.ants.modules.system.entity.SendMailHistory;
 import com.ants.modules.system.mapper.SendMailHistoryMapper;
@@ -46,8 +44,6 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
     private String bucketName;
     @Value(value = "${ants.minio.minio_url}")
     private String minioUrl;
-    @Autowired
-    AntsFileService antsFileService;
 
     @Override
     public boolean sendMail(Map<String, Object> map) {
@@ -118,13 +114,13 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
                 String id = map.get("id");
                 if (StringUtils.isNotBlank(id)) {
                     ids = ids + id + ",";
-                    AntsFile antsFile = antsFileService.getById(id);
-                    InputStream minioFile = MinioUtil.getMinioFile(bucketName, antsFile.getFileName());
-                    byte[] bytes = IOUtils.toByteArray(minioFile);
+//                    AntsFile antsFile = antsFileService.getById(id);
+//                    InputStream minioFile = MinioUtil.getMinioFile(bucketName, antsFile.getFileName());
+//                    byte[] bytes = IOUtils.toByteArray(minioFile);
                     //添加附件的内容
-                    filePart.setDataHandler(new DataHandler(new ByteArrayDataSource(bytes, "application/octet-stream")));
+//                    filePart.setDataHandler(new DataHandler(new ByteArrayDataSource(bytes, "application/octet-stream")));
                     //添加附件的标题
-                    filePart.setFileName(MimeUtility.encodeWord(antsFile.getOldFileName()));
+//                    filePart.setFileName(MimeUtility.encodeWord(antsFile.getOldFileName()));
                     multipart.addBodyPart(filePart);
                 } else {
                     flag = false;

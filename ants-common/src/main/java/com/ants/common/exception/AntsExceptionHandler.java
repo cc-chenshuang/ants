@@ -1,7 +1,7 @@
 package com.ants.common.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;

@@ -1,6 +1,6 @@
 package com.ants.modules.monitor.controller;
 
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import com.ants.modules.monitor.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.ants.modules.system.controller;
 
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import com.ants.modules.system.entity.MailConfig;
 import com.ants.modules.system.service.MailConfigService;
 import io.swagger.annotations.Api;

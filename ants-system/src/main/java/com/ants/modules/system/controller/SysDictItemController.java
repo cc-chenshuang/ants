@@ -1,12 +1,10 @@
 package com.ants.modules.system.controller;
 
-import com.ants.common.query.QueryGenerator;
-import com.ants.common.result.Result;
+import com.ants.common.system.query.QueryGenerator;
+import com.ants.common.system.result.Result;
 import com.ants.modules.system.entity.SysDictItem;
 import com.ants.modules.system.service.SysDictItemService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

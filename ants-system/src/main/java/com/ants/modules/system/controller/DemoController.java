@@ -3,7 +3,7 @@ package com.ants.modules.system.controller;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.ants.common.annotation.AutoLog;
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import com.ants.common.utils.*;
 import com.ants.modules.system.entity.Demo;
 import com.ants.modules.system.model.SysLoginModel;
@@ -11,7 +11,6 @@ import com.ants.modules.system.service.DemoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,7 +57,7 @@ public class DemoController {
     @GetMapping("/info")
     @ApiOperation("/info")
     public Result info(HttpServletRequest request) {
-        String token = request.getHeader("X-Token");
+        String token = request.getHeader("Ants-Token");
         SysLoginModel sysLoginModel = new SysLoginModel();
         sysLoginModel.setToken(token);
         // 查询所有账号Session会话
@@ -71,8 +70,6 @@ public class DemoController {
         Map<String, Object> map = new HashMap<>();
         map.put("sysLoginModel",sysLoginModel);
         map.put("roles",new String[]{"admin"});
-
-        map.put("sysMenu",new String[]{"admin"});
         return Result.ok(sysLoginModel);
     }
 

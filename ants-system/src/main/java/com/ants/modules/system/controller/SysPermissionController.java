@@ -3,7 +3,7 @@ package com.ants.modules.system.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CommonConstant;
-import com.ants.common.result.Result;
+import com.ants.common.system.result.Result;
 import com.ants.common.utils.MD5Util;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.MenuUtils;

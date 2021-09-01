@@ -1,16 +1,12 @@
 package com.ants.modules.quartz.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import com.ants.common.query.QueryGenerator;
-import com.ants.common.result.Result;
+import com.ants.common.system.query.QueryGenerator;
+import com.ants.common.system.result.Result;
 import com.ants.modules.quartz.entity.QuartzJob;
 import com.ants.modules.quartz.service.IQuartzJobService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -26,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +45,7 @@ public class QuartzJobController {
 
 	/**
 	 * 分页列表查询
-	 * 
+	 *
 	 * @param quartzJob
 	 * @param pageNo
 	 * @param pageSize
@@ -71,7 +64,7 @@ public class QuartzJobController {
 
 	/**
 	 * 添加定时任务
-	 * 
+	 *
 	 * @param quartzJob
 	 * @return
 	 */
@@ -88,7 +81,7 @@ public class QuartzJobController {
 
 	/**
 	 * 更新定时任务
-	 * 
+	 *
 	 * @param quartzJob
 	 * @return
 	 */
@@ -106,7 +99,7 @@ public class QuartzJobController {
 
 	/**
 	 * 通过id删除
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -123,7 +116,7 @@ public class QuartzJobController {
 
 	/**
 	 * 批量删除
-	 * 
+	 *
 	 * @param ids
 	 * @return
 	 */
@@ -141,7 +134,7 @@ public class QuartzJobController {
 
 	/**
 	 * 暂停定时任务
-	 * 
+	 *
 	 * @param jobClassName
 	 * @return
 	 */
@@ -159,7 +152,7 @@ public class QuartzJobController {
 
 	/**
 	 * 启动定时任务
-	 * 
+	 *
 	 * @param jobClassName
 	 * @return
 	 */
@@ -177,7 +170,7 @@ public class QuartzJobController {
 
 	/**
 	 * 通过id查询
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
