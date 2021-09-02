@@ -23,7 +23,7 @@ import java.util.Map;
 @Slf4j
 @Api(tags = "集成MyBatisPlus测试接口")
 @RestController
-@RequestMapping("/sys")
+@RequestMapping("/sys1")
 public class DemoController {
     private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 

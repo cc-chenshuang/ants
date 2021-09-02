@@ -27,10 +27,15 @@ public class SysLoginModel {
     private String captcha;
     @ApiModelProperty(value = "验证码key")
     private String checkKey;
+
     private String token;
+
     private String[] roles = {"admin"};
-    private String introduction = "ants";
-    private String avatar = "http://39.107.111.110:9000/ants-file/414ea39a-216a-4322-9fa5-83d81388d4c1.jpg";
-    private String name = "Ants";
+
+    private String introduction = "";
+
+    private String avatar = "";
+
+    private String name = "";
 
 }

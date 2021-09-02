@@ -64,9 +64,8 @@ public class SysUserController {
         return result;
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Result<SysUser> add(@RequestBody JSONObject jsonObject) {
-        Result<SysUser> result = new Result<SysUser>();
+    @PostMapping("/add")
+    public Result<?> add(@RequestBody JSONObject jsonObject) {
         String selectedRoles = jsonObject.getString("selectedroles");
         String selectedDeparts = jsonObject.getString("selecteddeparts");
         try {
@@ -78,13 +77,37 @@ public class SysUserController {
             user.setPassword(passwordEncode);
             user.setStatus(1);
             user.setDelFlag(CommonConstant.DEL_FLAG_0);
-//            sysUserService.addUserWithRole(user, selectedRoles);
-//            sysUserService.addUserWithDepart(user, selectedDeparts);
-            result.success("添加成功！");
+            sysUserService.addUserWithRole(user, selectedRoles);
+            sysUserService.addUserWithDepart(user, selectedDeparts);
+
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            result.error500("操作失败");
+            return Result.error("操作失败");
         }
-        return result;
+        return Result.ok("添加成功！");
+    }
+
+    @RequestMapping(value = "/edit", method = RequestMethod.PUT)
+    public Result<?> edit(@RequestBody JSONObject jsonObject) {
+        try {
+            SysUser sysUser = sysUserService.getById(jsonObject.getString("id"));
+            if (sysUser == null) {
+                return Result.error("未找到对应实体");
+            } else {
+                SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+                user.setUpdateTime(new Date());
+                //String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), sysUser.getSalt());
+                user.setPassword(sysUser.getPassword());
+                String roles = jsonObject.getString("selectedroles");
+                String departs = jsonObject.getString("selecteddeparts");
+                sysUserService.editUserWithRole(user, roles);
+                sysUserService.editUserWithDepart(user, departs);
+
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.error("操作失败");
+        }
+        return Result.ok("修改成功!");
     }
 }

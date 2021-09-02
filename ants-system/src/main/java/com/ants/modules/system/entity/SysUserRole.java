@@ -25,7 +25,7 @@ public class SysUserRole implements Serializable {
 
     @TableId(type = IdType.ID_WORKER_STR)
     private String id;
-    
+
     /**
      * 用户id
      */
@@ -36,5 +36,12 @@ public class SysUserRole implements Serializable {
      */
     private String roleId;
 
+    public SysUserRole() {
+    }
+
+    public SysUserRole(String userId, String roleId) {
+        this.userId = userId;
+        this.roleId = roleId;
+    }
 
 }

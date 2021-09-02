@@ -14,4 +14,16 @@ import java.util.List;
  */
 public interface SysDictService extends IService<SysDict> {
     List<DictModel> getDictItemByCode(String dictCode);
+
+    String queryTableDictTextByKey(String table, String text, String code, String trim);
+
+    String queryDictTextByKey(String code, String trim);
+
+    @Deprecated
+    List<DictModel> queryTableDictItemsByCodeAndFilter(String param, String param1, String param2, String param3);
+
+    @Deprecated
+    List<DictModel> queryTableDictItemsByCode(String table, String text, String code);
+
+    public List<DictModel> queryDictItemsByCode(String code);
 }
