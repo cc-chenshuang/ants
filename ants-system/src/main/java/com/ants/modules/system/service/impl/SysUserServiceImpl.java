@@ -12,6 +12,8 @@ import com.ants.modules.system.mapper.*;
 import com.ants.modules.system.model.SysLoginModel;
 import com.ants.modules.system.service.SysUserService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -92,14 +94,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public void editUserWithRole(SysUser user, String roles) {
         this.updateById(user);
         //先删后加
-//        sysUserRoleMapper.delete(new QueryWrapper<SysUserRole>().lambda().eq(SysUserRole::getUserId, user.getId()));
-//        if (oConvertUtils.isNotEmpty(roles)) {
-//            String[] arr = roles.split(",");
-//            for (String roleId : arr) {
-//                SysUserRole userRole = new SysUserRole(user.getId(), roleId);
-//                sysUserRoleMapper.insert(userRole);
-//            }
-//        }
+        sysUserRoleMapper.delete(new QueryWrapper<SysUserRole>().lambda().eq(SysUserRole::getUserId, user.getId()));
+        if (oConvertUtils.isNotEmpty(roles)) {
+            String[] arr = roles.split(",");
+            for (String roleId : arr) {
+                SysUserRole userRole = new SysUserRole(user.getId(), roleId);
+                sysUserRoleMapper.insert(userRole);
+            }
+        }
     }
 
     @Override
@@ -135,5 +137,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
         }
     }
+
+    // 根据角色Id查询
+    @Override
+    public IPage<SysUser> getUserByRoleId(Page<SysUser> page, String roleId, String username) {
+        return userMapper.getUserByRoleId(page, roleId, username);
+    }
+
 
 }

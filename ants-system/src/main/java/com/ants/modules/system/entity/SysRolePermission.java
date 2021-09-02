@@ -31,7 +31,7 @@ public class SysRolePermission implements Serializable {
      */
     @TableId(type = IdType.ID_WORKER_STR)
     private String id;
-    
+
     /**
      * 角色id
      */
@@ -41,7 +41,7 @@ public class SysRolePermission implements Serializable {
      * 权限id
      */
     private String permissionId;
-    
+
     /**
      * 操作时间
      */
@@ -53,6 +53,14 @@ public class SysRolePermission implements Serializable {
      * 操作ip
      */
     private String operateIp;
+
+    public SysRolePermission() {
+    }
+
+    public SysRolePermission(String roleId, String permissionId) {
+        this.roleId = roleId;
+        this.permissionId = permissionId;
+    }
 
 
 }

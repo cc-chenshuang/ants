@@ -8,7 +8,10 @@ import com.ants.common.system.result.Result;
 import com.ants.common.utils.PasswordUtil;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.SysUser;
+import com.ants.modules.system.entity.SysUserRole;
+import com.ants.modules.system.service.ISysUserRoleService;
 import com.ants.modules.system.service.SysUserService;
+import com.ants.modules.system.vo.SysUserRoleVO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,7 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * TODO
@@ -32,6 +38,8 @@ public class SysUserController {
 
     @Autowired
     SysUserService sysUserService;
+    @Autowired
+    private ISysUserRoleService sysUserRoleService;
 
     /**
      * 获取用户列表数据
@@ -59,7 +67,7 @@ public class SysUserController {
 
         result.setSuccess(true);
         result.setResult(pageList);
-        result.setCode(200);
+        result.setCode(CommonConstant.SC_OK_200);
         log.info(pageList.toString());
         return result;
     }
@@ -109,5 +117,116 @@ public class SysUserController {
             return Result.error("操作失败");
         }
         return Result.ok("修改成功!");
+    }
+
+    @RequestMapping(value = "/queryUserRole", method = RequestMethod.GET)
+    public Result<?> queryUserRole(@RequestParam(name = "userid", required = true) String userid) {
+        Result<List<String>> result = new Result<>();
+        List<String> list = new ArrayList<String>();
+        List<SysUserRole> userRole = sysUserRoleService.list(new QueryWrapper<SysUserRole>().lambda().eq(SysUserRole::getUserId, userid));
+        if (userRole == null || userRole.size() <= 0) {
+            Result.error("未找到用户相关角色信息");
+        } else {
+            for (SysUserRole sysUserRole : userRole) {
+                list.add(sysUserRole.getRoleId());
+            }
+        }
+        return Result.ok(list);
+    }
+
+    @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)
+    public Result<IPage<SysUser>> userRoleList(@RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                               @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize, HttpServletRequest req) {
+        Result<IPage<SysUser>> result = new Result<IPage<SysUser>>();
+        Page<SysUser> page = new Page<SysUser>(pageNo, pageSize);
+        String roleId = req.getParameter("roleId");
+        String username = req.getParameter("username");
+        IPage<SysUser> pageList = sysUserService.getUserByRoleId(page, roleId, username);
+        result.setSuccess(true);
+        result.setCode(CommonConstant.SC_OK_200);
+        result.setResult(pageList);
+        return result;
+    }
+
+    /**
+     * 给指定角色添加用户
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/addSysUserRole", method = RequestMethod.POST)
+    public Result<String> addSysUserRole(@RequestBody SysUserRoleVO sysUserRoleVO) {
+        Result<String> result = new Result<String>();
+        try {
+            String sysRoleId = sysUserRoleVO.getRoleId();
+            for (String sysUserId : sysUserRoleVO.getUserIdList()) {
+                SysUserRole sysUserRole = new SysUserRole(sysUserId, sysRoleId);
+                QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<SysUserRole>();
+                queryWrapper.eq("role_id", sysRoleId).eq("user_id", sysUserId);
+                SysUserRole one = sysUserRoleService.getOne(queryWrapper);
+                if (one == null) {
+                    sysUserRoleService.save(sysUserRole);
+                }
+
+            }
+            result.setMessage("添加成功!");
+            result.setSuccess(true);
+            result.setCode(CommonConstant.SC_OK_200);
+            return result;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.setSuccess(false);
+            result.setCode(CommonConstant.SC_OK_200);
+            result.setMessage("出错了: " + e.getMessage());
+            return result;
+        }
+    }
+
+    /**
+     * 删除指定角色的用户关系
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/deleteUserRole", method = RequestMethod.DELETE)
+    public Result<SysUserRole> deleteUserRole(@RequestParam(name = "roleId") String roleId,
+                                              @RequestParam(name = "userId", required = true) String userId
+    ) {
+        Result<SysUserRole> result = new Result<SysUserRole>();
+        try {
+            QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<SysUserRole>();
+            queryWrapper.eq("role_id", roleId).eq("user_id", userId);
+            sysUserRoleService.remove(queryWrapper);
+            result.success("删除成功!");
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("删除失败！");
+        }
+        return result;
+    }
+
+    /**
+     * 批量删除指定角色的用户关系
+     *
+     * @param
+     * @return
+     */
+    @RequestMapping(value = "/deleteUserRoleBatch", method = RequestMethod.DELETE)
+    public Result<SysUserRole> deleteUserRoleBatch(
+            @RequestParam(name = "roleId") String roleId,
+            @RequestParam(name = "userIds", required = true) String userIds) {
+        Result<SysUserRole> result = new Result<SysUserRole>();
+        try {
+            QueryWrapper<SysUserRole> queryWrapper = new QueryWrapper<SysUserRole>();
+            queryWrapper.eq("role_id", roleId).in("user_id", Arrays.asList(userIds.split(",")));
+            sysUserRoleService.remove(queryWrapper);
+            result.success("删除成功!");
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("删除失败！");
+        }
+        return result;
     }
 }

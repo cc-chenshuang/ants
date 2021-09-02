@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ants.modules.system.mapper.SysPermissionMapper">
 
-	<select id="queryByUser" parameterType="Object" resultType="com.ants.modules.system.entity.SysPermission">
+	<select id="queryByUser" parameterType="string" resultType="com.ants.modules.system.entity.SysPermission">
 		SELECT
 			*
 		FROM
@@ -23,12 +23,30 @@
 										JOIN sys_user d ON d.id = c.user_id
 								WHERE
 									p.id = a.permission_id
-								  AND d.username = 'admin'
+								  AND d.username = #{username}
 							)
 						)
 				  AND p.del_flag = 0
 			) h
 		ORDER BY
 			h.sort_no ASC
+	</select>
+    <select id="queryListByParentId"  parameterType="Object" resultType="com.ants.modules.system.model.TreeModel">
+		SELECT
+		id
+		,parent_id
+		,name
+		,icon
+		,leaf_flag
+		FROM   sys_permission
+		WHERE 1=1
+		<choose>
+			<when test="parentId != null and parentId != ''">
+				AND parent_id =  #{parentId,jdbcType=VARCHAR}
+			</when>
+			<otherwise>
+				AND parent_id is null
+			</otherwise>
+		</choose>
 	</select>
 </mapper>

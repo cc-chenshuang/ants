@@ -8,13 +8,20 @@ import com.ants.common.utils.MD5Util;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.MenuUtils;
 import com.ants.modules.system.entity.SysPermission;
+import com.ants.modules.system.entity.SysRolePermission;
+import com.ants.modules.system.model.SysPermissionTree;
+import com.ants.modules.system.model.TreeModel;
 import com.ants.modules.system.service.ISysPermissionService;
+import com.ants.modules.system.service.ISysRolePermissionService;
+import com.ants.modules.system.util.PermissionDataUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,6 +38,130 @@ public class SysPermissionController {
 
     @Autowired
     private ISysPermissionService sysPermissionService;
+
+    @Autowired
+    private ISysRolePermissionService sysRolePermissionService;
+
+    /**
+     * 加载数据节点
+     *
+     * @return
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public Result<List<SysPermissionTree>> list() {
+        long start = System.currentTimeMillis();
+        Result<List<SysPermissionTree>> result = new Result<>();
+        try {
+            LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+            query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+            query.orderByAsc(SysPermission::getSortNo);
+            List<SysPermission> list = sysPermissionService.list(query);
+            List<SysPermissionTree> treeList = new ArrayList<>();
+            getTreeList(treeList, list, null);
+            result.setResult(treeList);
+            result.setSuccess(true);
+            result.setCode(CommonConstant.SC_OK_200);
+            log.info("======获取全部菜单数据=====耗时:" + (System.currentTimeMillis() - start) + "毫秒");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /*update_begin author:wuxianquan date:20190908 for:先查询一级菜单，当用户点击展开菜单时加载子菜单 */
+    /**
+     * 系统菜单列表(一级菜单)
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getSystemMenuList", method = RequestMethod.GET)
+    public Result<List<SysPermissionTree>> getSystemMenuList() {
+        long start = System.currentTimeMillis();
+        Result<List<SysPermissionTree>> result = new Result<>();
+        try {
+            LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+            query.eq(SysPermission::getMenuType,CommonConstant.MENU_TYPE_0);
+            query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+            query.orderByAsc(SysPermission::getSortNo);
+            List<SysPermission> list = sysPermissionService.list(query);
+            List<SysPermissionTree> sysPermissionTreeList = new ArrayList<SysPermissionTree>();
+            for(SysPermission sysPermission : list){
+                SysPermissionTree sysPermissionTree = new SysPermissionTree(sysPermission);
+                sysPermissionTreeList.add(sysPermissionTree);
+            }
+            result.setResult(sysPermissionTreeList);
+            result.setSuccess(true);
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        log.info("======获取一级菜单数据=====耗时:" + (System.currentTimeMillis() - start) + "毫秒");
+        return result;
+    }
+
+    /**
+     * 查询子菜单
+     * @param parentId
+     * @return
+     */
+    @RequestMapping(value = "/getSystemSubmenu", method = RequestMethod.GET)
+    public Result<List<SysPermissionTree>> getSystemSubmenu(@RequestParam("parentId") String parentId){
+        Result<List<SysPermissionTree>> result = new Result<>();
+        try{
+            LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+            query.eq(SysPermission::getParentId,parentId);
+            query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+            query.orderByAsc(SysPermission::getSortNo);
+            List<SysPermission> list = sysPermissionService.list(query);
+            List<SysPermissionTree> sysPermissionTreeList = new ArrayList<SysPermissionTree>();
+            for(SysPermission sysPermission : list){
+                SysPermissionTree sysPermissionTree = new SysPermissionTree(sysPermission);
+                sysPermissionTreeList.add(sysPermissionTree);
+            }
+            result.setResult(sysPermissionTreeList);
+            result.setSuccess(true);
+            result.setCode(CommonConstant.SC_OK_200);
+        }catch (Exception e){
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+    /*update_end author:wuxianquan date:20190908 for:先查询一级菜单，当用户点击展开菜单时加载子菜单 */
+
+    // update_begin author:sunjianlei date:20200108 for: 新增批量根据父ID查询子级菜单的接口 -------------
+    /**
+     * 查询子菜单
+     *
+     * @param parentIds 父ID（多个采用半角逗号分割）
+     * @return 返回 key-value 的 Map
+     */
+    @GetMapping("/getSystemSubmenuBatch")
+    public Result getSystemSubmenuBatch(@RequestParam("parentIds") String parentIds) {
+        try {
+            LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<>();
+            List<String> parentIdList = Arrays.asList(parentIds.split(","));
+            query.in(SysPermission::getParentId, parentIdList);
+            query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+            query.orderByAsc(SysPermission::getSortNo);
+            List<SysPermission> list = sysPermissionService.list(query);
+            Map<String, List<SysPermissionTree>> listMap = new HashMap<>();
+            for (SysPermission item : list) {
+                String pid = item.getParentId();
+                if (parentIdList.contains(pid)) {
+                    List<SysPermissionTree> mapList = listMap.get(pid);
+                    if (mapList == null) {
+                        mapList = new ArrayList<>();
+                    }
+                    mapList.add(new SysPermissionTree(item));
+                    listMap.put(pid, mapList);
+                }
+            }
+            return Result.ok(listMap);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.error("批量查询子菜单失败：" + e.getMessage());
+        }
+    }
 
     /**
      * 查询用户拥有的菜单权限和按钮权限（根据TOKEN）
@@ -50,6 +181,7 @@ public class SysPermissionController {
             List<SysPermission> childPerms = MenuUtils.getChildPerms(sysPermissions);
             result.setResult(childPerms);
             result.success("查询成功");
+            result.setCode(CommonConstant.SC_OK_200);
         } catch (Exception e) {
             result.error500("查询失败:" + e.getMessage());
             log.error(e.getMessage(), e);
@@ -94,8 +226,192 @@ public class SysPermissionController {
             json.put("allAuth", allauthjsonArray);
             result.setResult(json);
             result.success("查询成功");
+            result.setCode(CommonConstant.SC_OK_200);
         } catch (Exception e) {
             result.error500("查询失败:" + e.getMessage());
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * 添加菜单
+     * @param permission
+     * @return
+     */
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public Result<SysPermission> add(@RequestBody SysPermission permission) {
+        Result<SysPermission> result = new Result<SysPermission>();
+        try {
+            permission = PermissionDataUtil.intelligentProcessData(permission);
+            sysPermissionService.addPermission(permission);
+            result.success("添加成功！");
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 编辑菜单
+     * @param permission
+     * @return
+     */
+    @RequestMapping(value = "/edit", method = { RequestMethod.PUT, RequestMethod.POST })
+    public Result<SysPermission> edit(@RequestBody SysPermission permission) {
+        Result<SysPermission> result = new Result<>();
+        try {
+            permission = PermissionDataUtil.intelligentProcessData(permission);
+            sysPermissionService.editPermission(permission);
+            result.success("修改成功！");
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败");
+        }
+        return result;
+    }
+
+    /**
+     * 删除菜单
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Result<SysPermission> delete(@RequestParam(name = "id", required = true) String id) {
+        Result<SysPermission> result = new Result<>();
+        try {
+            sysPermissionService.deletePermission(id);
+            result.setCode(CommonConstant.SC_OK_200);
+            result.success("删除成功!");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500(e.getMessage());
+        }
+        return result;
+    }
+
+    /**
+     * 批量删除菜单
+     * @param ids
+     * @return
+     */
+    @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+    public Result<SysPermission> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+        Result<SysPermission> result = new Result<>();
+        try {
+            String[] arr = ids.split(",");
+            for (String id : arr) {
+                if (oConvertUtils.isNotEmpty(id)) {
+                    sysPermissionService.deletePermission(id);
+                }
+            }
+            result.setCode(CommonConstant.SC_OK_200);
+            result.success("删除成功!");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("删除成功!");
+        }
+        return result;
+    }
+
+    /**
+     * 获取全部的权限树
+     *
+     * @return
+     */
+    @RequestMapping(value = "/queryTreeList", method = RequestMethod.GET)
+    public Result<Map<String, Object>> queryTreeList() {
+        Result<Map<String, Object>> result = new Result<>();
+        // 全部权限ids
+        List<String> ids = new ArrayList<>();
+        try {
+            LambdaQueryWrapper<SysPermission> query = new LambdaQueryWrapper<SysPermission>();
+            query.eq(SysPermission::getDelFlag, CommonConstant.DEL_FLAG_0);
+            query.orderByAsc(SysPermission::getSortNo);
+            List<SysPermission> list = sysPermissionService.list(query);
+            for (SysPermission sysPer : list) {
+                ids.add(sysPer.getId());
+            }
+            List<TreeModel> treeList = new ArrayList<>();
+            getTreeModelList(treeList, list, null);
+
+            Map<String, Object> resMap = new HashMap<String, Object>();
+            resMap.put("treeList", treeList); // 全部树节点数据
+            resMap.put("ids", ids);// 全部树ids
+            result.setResult(resMap);
+            result.setCode(CommonConstant.SC_OK_200);
+            result.setSuccess(true);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * 异步加载数据节点
+     *
+     * @return
+     */
+    @RequestMapping(value = "/queryListAsync", method = RequestMethod.GET)
+    public Result<List<TreeModel>> queryAsync(@RequestParam(name = "pid", required = false) String parentId) {
+        Result<List<TreeModel>> result = new Result<>();
+        try {
+            List<TreeModel> list = sysPermissionService.queryListByParentId(parentId);
+            if (list == null || list.size() <= 0) {
+                result.error500("未找到角色信息");
+            } else {
+                result.setResult(list);
+                result.setSuccess(true);
+                result.setCode(CommonConstant.SC_OK_200);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+
+        return result;
+    }
+
+    /**
+     * 查询角色授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/queryRolePermission", method = RequestMethod.GET)
+    public Result<List<String>> queryRolePermission(@RequestParam(name = "roleId", required = true) String roleId) {
+        Result<List<String>> result = new Result<>();
+        try {
+            List<SysRolePermission> list = sysRolePermissionService.list(new QueryWrapper<SysRolePermission>().lambda().eq(SysRolePermission::getRoleId, roleId));
+            result.setResult(list.stream().map(SysRolePermission -> String.valueOf(SysRolePermission.getPermissionId())).collect(Collectors.toList()));
+            result.setSuccess(true);
+            result.setCode(CommonConstant.SC_OK_200);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    /**
+     * 保存角色授权
+     *
+     * @return
+     */
+    @RequestMapping(value = "/saveRolePermission", method = RequestMethod.POST)
+    public Result<String> saveRolePermission(@RequestBody JSONObject json) {
+        long start = System.currentTimeMillis();
+        Result<String> result = new Result<>();
+        try {
+            String roleId = json.getString("roleId");
+            String permissionIds = json.getString("permissionIds");
+            String lastPermissionIds = json.getString("lastpermissionIds");
+            this.sysRolePermissionService.saveRolePermission(roleId, permissionIds, lastPermissionIds);
+            result.success("保存成功！");
+            result.setCode(CommonConstant.SC_OK_200);
+            log.info("======角色授权成功=====耗时:" + (System.currentTimeMillis() - start) + "毫秒");
+        } catch (Exception e) {
+            result.error500("授权失败！");
             log.error(e.getMessage(), e);
         }
         return result;
@@ -306,6 +622,44 @@ public class SysPermissionController {
             json.put("type", permission.getPermsType());
             json.put("describe", permission.getName());
             jsonArray.add(json);
+        }
+    }
+
+    private void getTreeList(List<SysPermissionTree> treeList, List<SysPermission> metaList, SysPermissionTree temp) {
+        for (SysPermission permission : metaList) {
+            String tempPid = permission.getParentId();
+            SysPermissionTree tree = new SysPermissionTree(permission);
+            if (temp == null && oConvertUtils.isEmpty(tempPid)) {
+                treeList.add(tree);
+                if (!tree.getIsLeaf()) {
+                    getTreeList(treeList, metaList, tree);
+                }
+            } else if (temp != null && tempPid != null && tempPid.equals(temp.getId())) {
+                temp.getChildren().add(tree);
+                if (!tree.getIsLeaf()) {
+                    getTreeList(treeList, metaList, tree);
+                }
+            }
+
+        }
+    }
+
+    private void getTreeModelList(List<TreeModel> treeList, List<SysPermission> metaList, TreeModel temp) {
+        for (SysPermission permission : metaList) {
+            String tempPid = permission.getParentId();
+            TreeModel tree = new TreeModel(permission);
+            if (temp == null && oConvertUtils.isEmpty(tempPid)) {
+                treeList.add(tree);
+                if (!tree.getIsLeaf()) {
+                    getTreeModelList(treeList, metaList, tree);
+                }
+            } else if (temp != null && tempPid != null && tempPid.equals(temp.getKey())) {
+                temp.getChildren().add(tree);
+                if (!tree.getIsLeaf()) {
+                    getTreeModelList(treeList, metaList, tree);
+                }
+            }
+
         }
     }
 }
