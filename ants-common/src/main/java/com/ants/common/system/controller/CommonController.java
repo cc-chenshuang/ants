@@ -66,22 +66,25 @@ public class CommonController {
         }
         if (CommonConstant.UPLOAD_TYPE_LOCAL.equals(uploadType)) {
             //针对jeditor编辑器如何使 lcaol模式，采用 base64格式存储
-            String jeditor = request.getParameter("jeditor");
-            if (oConvertUtils.isNotEmpty(jeditor)) {
-                result.setMessage(CommonConstant.UPLOAD_TYPE_LOCAL);
-                result.setSuccess(true);
-                return result;
-            } else {
+//            String jeditor = request.getParameter("jeditor");
+//            if (oConvertUtils.isNotEmpty(jeditor)) {
+//                result.setMessage(CommonConstant.UPLOAD_TYPE_LOCAL);
+//                result.setSuccess(true);
+//                result.setCode(CommonConstant.SC_OK_200);
+//                return result;
+//            } else {
                 savePath = this.uploadLocal(file, bizPath);
-            }
+//            }
         } else {
 //            savePath = upload(file,bizPath,uploadType);
         }
         if (oConvertUtils.isNotEmpty(savePath)) {
             result.setMessage(savePath);
+            result.setCode(CommonConstant.SC_OK_200);
             result.setSuccess(true);
         } else {
             result.setMessage("上传失败！");
+            result.setCode(CommonConstant.SC_INTERNAL_SERVER_ERROR_500);
             result.setSuccess(false);
         }
         return result;
