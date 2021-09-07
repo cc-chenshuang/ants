@@ -1,5 +1,6 @@
 package com.ants.modules.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CommonConstant;
@@ -203,7 +204,8 @@ public class SysPermissionController {
             }
             log.info(" ------ 通过令牌获取用户拥有的访问菜单 ---- TOKEN ------ " + token);
 //			String username = JwtUtil.getUsername(token);
-            List<SysPermission> metaList = sysPermissionService.queryByUser("admin");
+            String loginId = StpUtil.getLoginIdAsString();
+            List<SysPermission> metaList = sysPermissionService.queryByUser(loginId);
             //update-end-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
             JSONObject json = new JSONObject();
             JSONArray menujsonArray = new JSONArray();
