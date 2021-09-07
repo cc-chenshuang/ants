@@ -2,7 +2,6 @@ package com.ants.modules.system.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.ants.common.system.result.Result;
 import com.ants.common.utils.MD5Util;
 import com.ants.common.utils.PasswordUtil;
@@ -10,7 +9,7 @@ import com.ants.common.utils.RandImageUtil;
 import com.ants.common.utils.RedisUtil;
 import com.ants.modules.system.entity.SysUser;
 import com.ants.modules.system.model.SysLoginModel;
-import com.ants.modules.system.service.SysDictService;
+import com.ants.modules.system.service.ISysDictService;
 import com.ants.modules.system.service.SysLogService;
 import com.ants.modules.system.service.SysUserService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -41,7 +40,7 @@ public class LoginController {
     @Autowired
     private RedisUtil redisUtil;
 
-    private SysDictService sysDictService;
+    private ISysDictService sysDictService;
 
     private static final String BASE_CHECK_CODES = "qwertyuiplkjhgfdsazxcvbnmQWERTYUPLKJHGFDSAZXCVBNM1234567890";
 

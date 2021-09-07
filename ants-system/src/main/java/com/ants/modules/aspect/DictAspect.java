@@ -5,7 +5,7 @@ import com.ants.common.annotation.Dict;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.result.Result;
 import com.ants.common.utils.oConvertUtils;
-import com.ants.modules.system.service.SysDictService;
+import com.ants.modules.system.service.ISysDictService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,7 +36,7 @@ import java.util.List;
 @Slf4j
 public class DictAspect {
     @Autowired
-    private SysDictService dictService;
+    private ISysDictService dictService;
 
     // 定义切点Pointcut
     @Pointcut("execution(public * com.ants.modules..*.*Controller.*(..))")

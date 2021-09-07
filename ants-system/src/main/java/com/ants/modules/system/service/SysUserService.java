@@ -31,4 +31,24 @@ public interface SysUserService extends IService<SysUser> {
      */
     public IPage<SysUser> getUserByRoleId(Page<SysUser> page, String roleId, String username);
 
+    /**
+     * 删除用户
+     * @param userId
+     * @return
+     */
+    public boolean deleteUser(String userId);
+
+    /**
+     * 批量删除用户
+     * @param userIds
+     * @return
+     */
+    public boolean deleteBatchUsers(String userIds);
+    /**
+     * 修改密码
+     *
+     * @param sysUser
+     * @return
+     */
+    public Result<?> changePassword(SysUser sysUser);
 }

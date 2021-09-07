@@ -12,7 +12,9 @@ import com.ants.modules.system.entity.SysUserRole;
 import com.ants.modules.system.service.ISysUserRoleService;
 import com.ants.modules.system.service.SysUserService;
 import com.ants.modules.system.vo.SysUserRoleVO;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
@@ -119,6 +121,52 @@ public class SysUserController {
         return Result.ok("修改成功!");
     }
 
+    /**
+     * 删除用户
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+        this.sysUserService.deleteUser(id);
+        return Result.ok("删除用户成功");
+    }
+
+    /**
+     * 批量删除用户
+     */
+    @RequestMapping(value = "/deleteBatch", method = RequestMethod.DELETE)
+    public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+        this.sysUserService.deleteBatchUsers(ids);
+        return Result.ok("批量删除用户成功");
+    }
+
+    /**
+     * 冻结&解冻用户
+     *
+     * @param jsonObject
+     * @return
+     */
+    @RequestMapping(value = "/frozenBatch", method = RequestMethod.PUT)
+    public Result<SysUser> frozenBatch(@RequestBody JSONObject jsonObject) {
+        Result<SysUser> result = new Result<SysUser>();
+        try {
+            String ids = jsonObject.getString("ids");
+            String status = jsonObject.getString("status");
+            String[] arr = ids.split(",");
+            for (String id : arr) {
+                if (oConvertUtils.isNotEmpty(id)) {
+                    this.sysUserService.update(new SysUser().setStatus(Integer.parseInt(status)),
+                            new UpdateWrapper<SysUser>().lambda().eq(SysUser::getId, id));
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            result.error500("操作失败" + e.getMessage());
+        }
+        result.success("操作成功!");
+        return result;
+
+    }
+
     @RequestMapping(value = "/queryUserRole", method = RequestMethod.GET)
     public Result<?> queryUserRole(@RequestParam(name = "userid", required = true) String userid) {
         Result<List<String>> result = new Result<>();
@@ -132,6 +180,19 @@ public class SysUserController {
             }
         }
         return Result.ok(list);
+    }
+
+    /**
+     * 修改密码
+     */
+    @RequestMapping(value = "/changePassword", method = RequestMethod.PUT)
+    public Result<?> changePassword(@RequestBody SysUser sysUser) {
+        SysUser u = this.sysUserService.getOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUsername, sysUser.getUsername()));
+        if (u == null) {
+            return Result.error("用户不存在！");
+        }
+        sysUser.setId(u.getId());
+        return sysUserService.changePassword(sysUser);
     }
 
     @RequestMapping(value = "/userRoleList", method = RequestMethod.GET)

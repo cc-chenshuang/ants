@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.result.Result;
+import com.ants.common.utils.PasswordUtil;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.SysUser;
 import com.ants.modules.system.entity.SysUserDepart;
@@ -142,6 +143,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public IPage<SysUser> getUserByRoleId(Page<SysUser> page, String roleId, String username) {
         return userMapper.getUserByRoleId(page, roleId, username);
+    }
+
+    @Override
+    @CacheEvict(value = {CacheConstant.SYS_USERS_CACHE}, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteUser(String userId) {
+        //1.删除用户
+        this.removeById(userId);
+        return false;
+    }
+
+    @Override
+    @CacheEvict(value = {CacheConstant.SYS_USERS_CACHE}, allEntries = true)
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteBatchUsers(String userIds) {
+        //1.删除用户
+        this.removeByIds(Arrays.asList(userIds.split(",")));
+        return false;
+    }
+
+    @Override
+    @CacheEvict(value = {CacheConstant.SYS_USERS_CACHE}, allEntries = true)
+    public Result<?> changePassword(SysUser sysUser) {
+        String salt = oConvertUtils.randomGen(8);
+        sysUser.setSalt(salt);
+        String password = sysUser.getPassword();
+        String passwordEncode = PasswordUtil.encrypt(sysUser.getUsername(), password, salt);
+        sysUser.setPassword(passwordEncode);
+        this.userMapper.updateById(sysUser);
+        return Result.ok("密码修改成功!");
     }
 
 
