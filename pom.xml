@@ -17,6 +17,7 @@
         <module>ants-system</module>
         <module>ants-mail</module>
         <module>ants-common</module>
+        <module>ants-article</module>
     </modules>
 
     <properties>
