@@ -1,6 +1,7 @@
 package com.ants.modules.ArticleManage.controller;
 
 import com.ants.common.annotation.AutoLog;
+import com.ants.common.constant.CommonConstant;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.common.system.query.QueryGenerator;
@@ -54,6 +55,7 @@ public class ArticleManageController {
     @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody ArticleManage articleManage) {
+        articleManage.setDelFlag(CommonConstant.DEL_FLAG_0);
         articleManageService.save(articleManage);
         return Result.ok("添加成功！");
     }
