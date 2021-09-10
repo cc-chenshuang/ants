@@ -2,6 +2,7 @@ package com.ants.modules.system.service.impl;
 
 import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
+import com.ants.common.system.vo.DictModel;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.SysDict;
 import com.ants.modules.system.entity.SysDictItem;
@@ -9,7 +10,6 @@ import com.ants.modules.system.mapper.SysDictItemMapper;
 import com.ants.modules.system.mapper.SysDictMapper;
 import com.ants.modules.system.model.TreeSelectModel;
 import com.ants.modules.system.service.ISysDictService;
-import com.ants.modules.system.vo.DictModel;
 import com.ants.modules.system.vo.DictQuery;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

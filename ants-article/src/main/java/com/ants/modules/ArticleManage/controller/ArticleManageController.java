@@ -2,9 +2,9 @@ package com.ants.modules.ArticleManage.controller;
 
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
+import com.ants.common.system.query.QueryGenerator;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
-import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;

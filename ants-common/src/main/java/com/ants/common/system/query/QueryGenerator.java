@@ -1,6 +1,11 @@
 package com.ants.common.system.query;
 
 import com.alibaba.fastjson.JSON;
+import com.ants.common.constant.CommonConstant;
+import com.ants.common.system.query.MatchTypeEnum;
+import com.ants.common.system.query.QueryCondition;
+import com.ants.common.system.query.QueryRuleEnum;
+import com.ants.common.utils.SqlInjectionUtil;
 import com.ants.common.utils.oConvertUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -12,9 +17,7 @@ import java.math.BigDecimal;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class QueryGenerator {
@@ -89,8 +92,8 @@ public class QueryGenerator {
      * <p>使用此方法 需要有如下几点注意:
      * <br>1.使用QueryWrapper 而非LambdaQueryWrapper;
      * <br>2.实例化QueryWrapper时不可将实体传入参数
-     * <br>错误示例:如QueryWrapper<Demo> queryWrapper = new QueryWrapper<Demo>(Demo);
-     * <br>正确示例:QueryWrapper<Demo> queryWrapper = new QueryWrapper<Demo>();
+     * <br>错误示例:如QueryWrapper<JeecgDemo> queryWrapper = new QueryWrapper<JeecgDemo>(jeecgDemo);
+     * <br>正确示例:QueryWrapper<JeecgDemo> queryWrapper = new QueryWrapper<JeecgDemo>();
      * <br>3.也可以不使用这个方法直接调用 {@link #initQueryWrapper}直接获取实例
      */
     public static void installMplus(QueryWrapper<?> queryWrapper, Object searchObj, Map<String, String[]> parameterMap) {
@@ -104,6 +107,7 @@ public class QueryGenerator {
         //区间条件组装 模糊查询 高级查询组装 简单排序 权限查询
         PropertyDescriptor origDescriptors[] = PropertyUtils.getPropertyDescriptors(searchObj);
 
+
         String name, type;
         for (int i = 0; i < origDescriptors.length; i++) {
             //aliasName = origDescriptors[i].getName();  mybatis  不存在实体属性 不用处理别名的情况
@@ -113,7 +117,6 @@ public class QueryGenerator {
                 if (judgedIsUselessField(name) || !PropertyUtils.isReadable(searchObj, name)) {
                     continue;
                 }
-
 
                 // 添加 判断是否有区间值
                 String endValue = null, beginValue = null;
@@ -155,10 +158,10 @@ public class QueryGenerator {
                     QueryRuleEnum rule = convert2Rule(value);
                     value = replaceValue(rule, value);
                     // add -begin 添加判断为字符串时设为全模糊查询
-                    //if( (rule==null || QueryRuleEnum.EQ.equals(rule)) && "class java.lang.String".equals(type)) {
-                    // 可以设置左右模糊或全模糊，因人而异
-                    //rule = QueryRuleEnum.LIKE;
-                    //}
+//					if( (rule==null || QueryRuleEnum.EQ.equals(rule)) && "class java.lang.String".equals(type)) {
+//						// 可以设置左右模糊或全模糊，因人而异
+//						rule = QueryRuleEnum.LIKE;
+//					}
                     // add -end 添加判断为字符串时设为全模糊查询
                     addEasyQuery(queryWrapper, name, rule, value);
                 }
@@ -168,38 +171,38 @@ public class QueryGenerator {
             }
         }
         // 排序逻辑 处理
-//		doMultiFieldsOrder(queryWrapper, parameterMap);
+        doMultiFieldsOrder(queryWrapper, parameterMap);
 
         //高级查询
         doSuperQuery(queryWrapper, parameterMap);
 
     }
 
-//	//多字段排序 TODO 需要修改前端
-//	public static void doMultiFieldsOrder(QueryWrapper<?> queryWrapper,Map<String, String[]> parameterMap) {
-//		String column=null,order=null;
-//		if(parameterMap!=null&& parameterMap.containsKey(ORDER_COLUMN)) {
-//			column = parameterMap.get(ORDER_COLUMN)[0];
-//		}
-//		if(parameterMap!=null&& parameterMap.containsKey(ORDER_TYPE)) {
-//			order = parameterMap.get(ORDER_TYPE)[0];
-//		}
-//		log.debug("排序规则>>列:"+column+",排序方式:"+order);
-//		if (oConvertUtils.isNotEmpty(column) && oConvertUtils.isNotEmpty(order)) {
-//			//字典字段，去掉字典翻译文本后缀
-//			if(column.endsWith(CommonConstant.DICT_TEXT_SUFFIX)) {
-//				column = column.substring(0, column.lastIndexOf(CommonConstant.DICT_TEXT_SUFFIX));
-//			}
-//			//SQL注入check
-//			SqlInjectionUtil.filterContent(column);
-//
-//			if (order.toUpperCase().indexOf(ORDER_TYPE_ASC)>=0) {
-//				queryWrapper.orderByAsc(oConvertUtils.camelToUnderline(column));
-//			} else {
-//				queryWrapper.orderByDesc(oConvertUtils.camelToUnderline(column));
-//			}
-//		}
-//	}
+    //多字段排序 TODO 需要修改前端
+    public static void doMultiFieldsOrder(QueryWrapper<?> queryWrapper, Map<String, String[]> parameterMap) {
+        String column = null, order = null;
+        if (parameterMap != null && parameterMap.containsKey(ORDER_COLUMN)) {
+            column = parameterMap.get(ORDER_COLUMN)[0];
+        }
+        if (parameterMap != null && parameterMap.containsKey(ORDER_TYPE)) {
+            order = parameterMap.get(ORDER_TYPE)[0];
+        }
+        log.debug("排序规则>>列:" + column + ",排序方式:" + order);
+        if (oConvertUtils.isNotEmpty(column) && oConvertUtils.isNotEmpty(order)) {
+            //字典字段，去掉字典翻译文本后缀
+            if (column.endsWith(CommonConstant.DICT_TEXT_SUFFIX)) {
+                column = column.substring(0, column.lastIndexOf(CommonConstant.DICT_TEXT_SUFFIX));
+            }
+            //SQL注入check
+            SqlInjectionUtil.filterContent(column);
+
+            if (order.toUpperCase().indexOf(ORDER_TYPE_ASC) >= 0) {
+                queryWrapper.orderByAsc(oConvertUtils.camelToUnderline(column));
+            } else {
+                queryWrapper.orderByDesc(oConvertUtils.camelToUnderline(column));
+            }
+        }
+    }
 
     /**
      * 高级查询
@@ -473,4 +476,6 @@ public class QueryGenerator {
                 || "page".equals(name) || "rows".equals(name)
                 || "sort".equals(name) || "order".equals(name);
     }
+
+
 }

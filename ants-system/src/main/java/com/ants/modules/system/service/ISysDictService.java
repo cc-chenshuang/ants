@@ -1,9 +1,9 @@
 package com.ants.modules.system.service;
 
+import com.ants.common.system.vo.DictModel;
 import com.ants.modules.system.entity.SysDict;
 import com.ants.modules.system.entity.SysDictItem;
 import com.ants.modules.system.model.TreeSelectModel;
-import com.ants.modules.system.vo.DictModel;
 import com.ants.modules.system.vo.DictQuery;
 import com.baomidou.mybatisplus.extension.service.IService;
 

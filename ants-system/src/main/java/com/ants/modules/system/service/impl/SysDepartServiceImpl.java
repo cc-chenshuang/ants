@@ -32,4 +32,9 @@ public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart
 	@Autowired
 	private SysUserMapper sysUserMapper;
 
+	@Override
+	public List<SysDepart> queryDepartsByUsername(String username) {
+		return baseMapper.queryDepartsByUsername(username);
+	}
+
 }

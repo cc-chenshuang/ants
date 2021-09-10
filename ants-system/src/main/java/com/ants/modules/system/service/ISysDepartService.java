@@ -15,4 +15,11 @@ import java.util.List;
  */
 public interface ISysDepartService extends IService<SysDepart>{
 
+    /**
+     * 根据用户名查询部门
+     *
+     * @param username
+     * @return
+     */
+    List<SysDepart> queryDepartsByUsername(String username);
 }

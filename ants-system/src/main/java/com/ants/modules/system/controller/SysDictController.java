@@ -6,6 +6,7 @@ import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.common.system.vo.DictModel;
 import com.ants.common.utils.SqlInjectionUtil;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.SysDict;
@@ -13,24 +14,18 @@ import com.ants.modules.system.model.SysDictTree;
 import com.ants.modules.system.model.TreeSelectModel;
 import com.ants.modules.system.service.ISysDictItemService;
 import com.ants.modules.system.service.ISysDictService;
-import com.ants.modules.system.vo.DictModel;
 import com.ants.modules.system.vo.DictQuery;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**

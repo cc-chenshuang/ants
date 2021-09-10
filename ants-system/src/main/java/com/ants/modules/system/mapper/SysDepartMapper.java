@@ -17,5 +17,37 @@ import java.util.List;
  */
 public interface SysDepartMapper extends BaseMapper<SysDepart> {
 
+    /**
+     * 根据用户名查询部门
+     *
+     * @param username
+     * @return
+     */
+    public List<SysDepart> queryDepartsByUsername(@Param("username") String username);
+
+    @Select("select id from sys_depart where org_code=#{orgCode}")
+    public String queryDepartIdByOrgCode(@Param("orgCode") String orgCode);
+
+    @Select("select depart_name from sys_depart where id=#{deptId}")
+    public String getDepartNameByDeptId(@Param("deptId") String deptId);
+
+    @Select("select * from sys_depart where ori_org_code=#{oriOrgCode}")
+    public SysDepart queryDepartByOriOrgCode(@Param("oriOrgCode") String oriOrgCode);
+
+    @Select("select id,parent_id from sys_depart where id=#{departId}")
+    public SysDepart getParentDepartId(@Param("departId") String departId);
+
+    /**
+     * 通过部门id查询部门编码
+     * @param deptIds
+     * @return
+     */
+    List<String> getDepartCodesByDeptIds(@org.apache.ibatis.annotations.Param("deptIds") String[] deptIds);
+    /**
+     * 通过用户名查询部门编码
+     * @param userNames
+     * @return
+     */
+    List<String> getDepartCodesByUserNames(@org.apache.ibatis.annotations.Param("userNames") String[] userNames);
 
 }

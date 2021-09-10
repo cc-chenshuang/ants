@@ -1,9 +1,9 @@
 package com.ants.modules.system.mapper;
 
+import com.ants.common.system.vo.DictModel;
 import com.ants.modules.system.entity.SysDict;
 import com.ants.modules.system.model.DuplicateCheckVo;
 import com.ants.modules.system.model.TreeSelectModel;
-import com.ants.modules.system.vo.DictModel;
 import com.ants.modules.system.vo.DictQuery;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

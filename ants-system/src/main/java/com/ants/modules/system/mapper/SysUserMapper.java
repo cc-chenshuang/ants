@@ -22,6 +22,13 @@ import java.util.Map;
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     /**
+     * 通过用户账号查询用户信息
+     * @param username
+     * @return
+     */
+    public SysUser getUserByName(@Param("username") String username);
+
+    /**
      * @Author scott
      * @Date 2019/12/13 16:10
      * @Description: 批量删除角色与用户关系
