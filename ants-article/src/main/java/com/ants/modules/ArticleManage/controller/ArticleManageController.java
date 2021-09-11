@@ -1,8 +1,10 @@
 package com.ants.modules.ArticleManage.controller;
 
 import com.ants.common.annotation.AutoLog;
+import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
+import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.common.system.result.Result;
@@ -13,9 +15,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 /**
  * TODO
@@ -74,5 +78,32 @@ public class ArticleManageController {
         return Result.ok("编辑成功!");
     }
 
+    /**
+     * @param id
+     * @return
+     * @功能：删除
+     */
+    @DeleteMapping("/delete")
+    public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+        boolean ok = articleManageService.removeById(id);
+        if (ok) {
+            return Result.ok("删除成功");
+        }
+        return Result.error("删除失败");
+    }
+
+    /**
+     * @param ids
+     * @return
+     * @功能：批量删除
+     */
+    @DeleteMapping("/deleteBatch")
+    public Result<?> deleteBatch(@RequestParam(name = "ids", required = true) String ids) {
+        boolean ok = articleManageService.removeByIds(Arrays.asList(ids.split(",")));
+        if (ok) {
+            return Result.ok("删除成功");
+        }
+        return Result.error("删除失败");
+    }
 
 }
