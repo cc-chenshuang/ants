@@ -28,7 +28,7 @@ public class HttpTraceLogController {
     @Autowired
     HttpTraceLogService httpTraceLogService;
 
-    @GetMapping("/")
+    @GetMapping("/list")
     public Result<?> get(HttpTraceLog httpTraceLog,
                          @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                          @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,

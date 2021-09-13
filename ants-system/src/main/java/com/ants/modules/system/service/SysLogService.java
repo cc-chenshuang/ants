@@ -10,4 +10,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SysLogService extends IService<SysLog> {
 
+    /**
+     * @功能：清空所有日志记录
+     */
+    public void removeAll();
 }
