@@ -2,11 +2,13 @@ package com.ants.modules.system.service.impl;
 
 import cn.hutool.http.HtmlUtil;
 import com.ants.common.utils.MinioUtil;
+import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.MailConfig;
 import com.ants.modules.system.entity.SendMailHistory;
 import com.ants.modules.system.mapper.SendMailHistoryMapper;
 import com.ants.modules.system.service.MailConfigService;
 import com.ants.modules.system.service.SendMailHistoryService;
+import com.ants.modules.system.vo.SendMailVo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -14,20 +16,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * TODO
@@ -44,36 +44,28 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
     private String bucketName;
     @Value(value = "${ants.minio.minio_url}")
     private String minioUrl;
+    @Value(value = "${ants.path.upload}")
+    private String uploadpath;
 
     @Override
-    public boolean sendMail(Map<String, Object> map) {
-        List<String> list = (List<String>) map.get("addressees");
-        boolean b = false;
+    public boolean sendMail(SendMailVo sendMailVo) {
+        String addressees = sendMailVo.getAddressees();
+
         SendMailHistory sendMailHistory = new SendMailHistory();
-        sendMailHistory.setTitle(String.valueOf(map.get("title")));
-        sendMailHistory.setContent(String.valueOf(map.get("content")));
-        if (!list.isEmpty()) {
-            StringBuffer stringBuffer = new StringBuffer();
-            List<Map<String, String>> lists = (List<Map<String, String>>) map.get("addressees");
-            for (Map<String, String> map1 : lists) {
-                stringBuffer.append(map1.get("email") + ",");
-            }
-            String addresses = stringBuffer.toString();
-            sendMailHistory.setAddressee(addresses.substring(0, addresses.length() - 1));
-        } else {
-            return false;
-        }
-        b = this.sendMailUtil(sendMailHistory, (List<Map<String, String>>) map.get("fileIds"));
-        return b;
+        sendMailHistory.setTitle(sendMailVo.getTitle());
+        sendMailHistory.setContent(sendMailVo.getContent());
+        sendMailHistory.setAddressee(addressees);
+        boolean flag = this.sendMailUtil(sendMailHistory, sendMailVo.getUploadFile());
+        return flag;
     }
 
     /**
      * 发送邮件
      *
-     * @param mailInfo 待发送的邮件信息
-     * @param fileIds
+     * @param mailInfo  待发送的邮件信息
+     * @param filePaths
      */
-    public boolean sendMailUtil(SendMailHistory mailInfo, List<Map<String, String>> fileIds) {
+    public boolean sendMailUtil(SendMailHistory mailInfo, String filePaths) {
         MailConfig mailConfig = mailConfigService.list().get(0);
 
         // 1. 创建参数配置, 用于连接邮件服务器的参数配置
@@ -86,6 +78,8 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
         props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         Session session = Session.getInstance(props, null);
         String ids = "";
+        InputStream inputStream = null;
+        String content = mailInfo.getContent();
         try {
             MimeMessage msg = new MimeMessage(session);
             //设置发件人邮箱、发件人名称
@@ -97,41 +91,35 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
             //设置日期
             msg.setSentDate(new Date());
             //设置正文内容
-            msg.setText(mailInfo.getContent());
+            msg.setText(content);
 
             //向multipart对象中添加邮件的各个部分内容，包括文本内容和附件
             MimeMultipart multipart = new MimeMultipart();
             BodyPart contentPart = new MimeBodyPart();
-            contentPart.setContent(mailInfo.getContent(), "text/html;charset=UTF-8");
+            contentPart.setContent(content, "text/html;charset=UTF-8");
             multipart.addBodyPart(contentPart);
 
             multipart.setSubType("mixed");
             //添加附件
             MimeBodyPart filePart = null;
-            boolean flag = true;
-            for (Map<String, String> map : fileIds) {
-                filePart = new MimeBodyPart();
-                String id = map.get("id");
-                if (StringUtils.isNotBlank(id)) {
-                    ids = ids + id + ",";
-//                    AntsFile antsFile = antsFileService.getById(id);
-//                    InputStream minioFile = MinioUtil.getMinioFile(bucketName, antsFile.getFileName());
-//                    byte[] bytes = IOUtils.toByteArray(minioFile);
+            if (filePaths != null && filePaths.split(",").length > 0) {
+                for (String filePath : filePaths.split(",")) {
+                    inputStream = null;
+                    filePart = new MimeBodyPart();
+                    ids = ids + filePath + ",";
+                    inputStream = readLocalFile(filePath);
+                    byte[] bytes = IOUtils.toByteArray(inputStream);
                     //添加附件的内容
-//                    filePart.setDataHandler(new DataHandler(new ByteArrayDataSource(bytes, "application/octet-stream")));
+                    filePart.setDataHandler(new DataHandler(new ByteArrayDataSource(bytes, "application/octet-stream")));
                     //添加附件的标题
-//                    filePart.setFileName(MimeUtility.encodeWord(antsFile.getOldFileName()));
+                    filePart.setFileName(MimeUtility.encodeWord(filePath.replace("mailFile/", "")));
                     multipart.addBodyPart(filePart);
-                } else {
-                    flag = false;
                 }
-            }
-            if (flag) {
                 //将multipart对象放到message中
                 msg.setContent(multipart);
-                ids = ids.substring(0, ids.length() - 1);
-                mailInfo.setFileId(ids);
+                mailInfo.setFileId(filePaths);
             }
+
             //发送邮件，参数为邮件信息，发件人邮箱和发件人邮箱密码
             Transport.send(msg, mailConfig.getUserName(), mailConfig.getPassword());
         } catch (MessagingException mex) {
@@ -142,8 +130,17 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
             return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    log.error(e.getMessage(), e);
+                }
+            }
         }
-        mailInfo.setAddresser(mailConfig.getUserName());
+        mailInfo.setSender(mailConfig.getUserName());
         String ip = null;
         try {
             ip = InetAddress.getLocalHost().getHostAddress();
@@ -161,5 +158,20 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
             log.error("保存邮件发送记录失败！" + e);
         }
         return true;
+    }
+
+    public InputStream readLocalFile(String filePath) throws FileNotFoundException {
+        if (oConvertUtils.isEmpty(filePath) || filePath == "null") {
+            return null;
+        }
+        // 其余处理略
+        InputStream inputStream = null;
+        filePath = filePath.replace("..", "");
+        if (filePath.endsWith(",")) {
+            filePath = filePath.substring(0, filePath.length() - 1);
+        }
+        filePath = uploadpath + File.separator + filePath;
+        inputStream = new BufferedInputStream(new FileInputStream(filePath));
+        return inputStream;
     }
 }

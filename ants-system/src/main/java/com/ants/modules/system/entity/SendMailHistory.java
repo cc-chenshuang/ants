@@ -35,7 +35,7 @@ public class SendMailHistory {
      * 发件人
      */
     @ApiModelProperty(value = "发件人")
-    private String addresser;
+    private String sender;
     /**
      * 收件人
      */
@@ -59,6 +59,7 @@ public class SendMailHistory {
     /**
      * 用户ID
      */
+    @TableField(exist = false)
     @ApiModelProperty(value = "用户ID")
     private String userId;
 
@@ -94,6 +95,7 @@ public class SendMailHistory {
      * 文件ID
      */
     @ApiModelProperty(value = "文件ID")
+    @TableField(exist = false)
     private String fileId;
     /**
      * 文件名称

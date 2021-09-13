@@ -1,6 +1,7 @@
 package com.ants.modules.system.service;
 
 import com.ants.modules.system.entity.SendMailHistory;
+import com.ants.modules.system.vo.SendMailVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Map;
@@ -13,5 +14,5 @@ import java.util.Map;
  */
 public interface SendMailHistoryService extends IService<SendMailHistory> {
 
-    boolean sendMail(Map<String, Object> map);
+    boolean sendMail(SendMailVo sendMailVo);
 }

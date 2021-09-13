@@ -25,7 +25,7 @@ public class MailConfigController {
     MailConfigService mailConfigService;
 
     @ApiOperation("邮件配置")
-    @PostMapping("/")
+    @PostMapping("/send")
     public Result sendMail(@RequestBody MailConfig mailConfig) {
         String ip = null;
         try {
@@ -42,7 +42,7 @@ public class MailConfigController {
     }
 
     @ApiOperation("获取邮件配置")
-    @GetMapping("/")
+    @GetMapping("/getInfo")
     public Result<?> getConfigMail() {
         MailConfig mailConfig = mailConfigService.list().get(0);
         return Result.ok(mailConfig);

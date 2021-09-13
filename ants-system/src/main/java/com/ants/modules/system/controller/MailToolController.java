@@ -4,6 +4,7 @@ import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
 import com.ants.modules.system.entity.SendMailHistory;
 import com.ants.modules.system.service.SendMailHistoryService;
+import com.ants.modules.system.vo.SendMailVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -32,8 +33,8 @@ public class MailToolController {
 
     @ApiOperation("发送邮件")
     @PostMapping("/")
-    public Result sendMail(@RequestBody Map<String, Object> map) {
-        boolean b = sendMailHistoryService.sendMail(map);
+    public Result sendMail(@RequestBody SendMailVo sendMailVo) {
+        boolean b = sendMailHistoryService.sendMail(sendMailVo);
         if (b){
             log.info("邮件发送成功！");
             return Result.ok("发送成功！");
