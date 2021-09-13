@@ -22,6 +22,11 @@ import java.time.Duration;
 
 import static java.util.Collections.singletonMap;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Configuration
 @EnableCaching // 开启缓存支持
 public class RedisConfig extends CachingConfigurerSupport {
@@ -87,7 +92,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(6));
         RedisCacheConfiguration redisCacheConfiguration = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 												.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
-        
+
 		// 以锁写入的方式创建RedisCacheWriter对象
 		//RedisCacheWriter writer = RedisCacheWriter.lockingRedisCacheWriter(factory);
 		// 创建默认缓存配置对象

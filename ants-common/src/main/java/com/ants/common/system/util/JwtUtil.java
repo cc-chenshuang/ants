@@ -1,11 +1,6 @@
 package com.ants.common.system.util;
 
-import com.ants.common.constant.DataBaseConstant;
 import com.ants.common.exception.AntsException;
-import com.ants.common.system.api.ISysBaseAPI;
-import com.ants.common.system.vo.LoginUser;
-import com.ants.common.system.vo.SysUserCacheInfo;
-import com.ants.common.utils.DateUtils;
 import com.ants.common.utils.SpringContextUtils;
 import com.ants.common.utils.oConvertUtils;
 import com.auth0.jwt.JWT;
@@ -13,18 +8,17 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.common.base.Joiner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
+
 /**
- * @Author Scott
- * @Date 2018-07-12 14:23
- * @Desc JWT工具类
- **/
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class JwtUtil {
 
 	// Token过期时间60分钟（用户登录过期时间是此时间的两倍，以token在reids缓存时间为准）

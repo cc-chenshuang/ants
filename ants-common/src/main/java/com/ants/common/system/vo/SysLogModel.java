@@ -7,6 +7,11 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)

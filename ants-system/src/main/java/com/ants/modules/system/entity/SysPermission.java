@@ -12,13 +12,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+
 /**
- * <p>
- * 菜单权限表
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -152,10 +150,8 @@ public class SysPermission implements Serializable {
 	/**alwaysShow*/
     private boolean alwaysShow;
 
-	/*update_begin author:wuxianquan date:20190908 for:实体增加字段 */
     /** 外链菜单打开方式 0/内部打开 1/外部打开 */
     private boolean internalOrExternal;
-	/*update_end author:wuxianquan date:20190908 for:实体增加字段 */
 
 	@TableField(exist = false)
 	private List<SysPermission> children;

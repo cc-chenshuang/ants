@@ -2,13 +2,11 @@ package com.ants.common.system.vo;
 
 import java.util.Date;
 
+
 /**
- * <p>
- * 菜单权限规则表
- * </p>
- *
- * @Author huangzhilin
- * @since 2019-03-29
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class SysPermissionDataRuleModel {
 

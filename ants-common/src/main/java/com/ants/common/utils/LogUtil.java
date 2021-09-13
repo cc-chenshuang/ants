@@ -4,11 +4,11 @@ import com.ants.common.constant.CommonConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
- * @author wenda
- * @title
- * @date 2021/2/1 9:42
- * @desc
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class LogUtil {
 

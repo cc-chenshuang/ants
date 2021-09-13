@@ -13,8 +13,11 @@ import net.sf.jsqlparser.statement.select.*;
 
 import java.util.List;
 
+
 /**
- * 复写租户条件
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class AntsTenantParser extends TenantSqlParser {
 

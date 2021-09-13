@@ -17,6 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Slf4j
 @RestController
 @RequestMapping("/actuator/redis")
@@ -46,7 +51,6 @@ public class ActuatorRedisController {
         return redisService.getMemoryInfo();
     }
 
-  //update-begin--Author:zhangweijian  Date:20190425 for：获取磁盘信息
   	/**
   	 * @功能：获取磁盘信息
   	 * @param request
@@ -83,5 +87,4 @@ public class ActuatorRedisController {
   		}
   		return res;
   	}
-  	//update-end--Author:zhangweijian  Date:20190425 for：获取磁盘信息
 }

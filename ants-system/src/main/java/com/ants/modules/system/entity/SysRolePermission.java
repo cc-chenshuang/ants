@@ -11,13 +11,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+
 /**
- * <p>
- * 角色权限表
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

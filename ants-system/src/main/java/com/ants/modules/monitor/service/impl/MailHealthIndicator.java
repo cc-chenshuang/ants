@@ -4,12 +4,11 @@ import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
 
+
 /**
- * 功能说明:自定义邮件检测
- *
- * @author: 李波
- * @email: 503378406@qq.com
- * @date: 2019-06-29
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Component
 public class MailHealthIndicator implements HealthIndicator {

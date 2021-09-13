@@ -4,6 +4,11 @@ import com.ants.common.utils.DateUtils;
 
 import java.util.List;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class SysUserCacheInfo {
 
 	private String sysUserCode;

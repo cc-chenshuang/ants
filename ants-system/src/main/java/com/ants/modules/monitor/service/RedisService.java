@@ -1,12 +1,15 @@
 package com.ants.modules.monitor.service;
 
-
-
 import com.ants.modules.monitor.exception.RedisConnectException;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public interface RedisService {
 
 	/**

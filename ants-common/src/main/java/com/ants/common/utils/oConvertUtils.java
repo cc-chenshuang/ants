@@ -18,7 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 
+ *
  * @Author
  *
  */
@@ -36,7 +36,7 @@ public class oConvertUtils {
 		}
 		return (false);
 	}
-	
+
 	public static boolean isNotEmpty(Object object) {
 		if (object != null && !object.equals("") && !object.equals("null")) {
 			return (true);
@@ -160,7 +160,7 @@ public class oConvertUtils {
 			return (defval);
 		}
 	}
-	
+
 	public static Integer getInt(Object object) {
 		if (isEmpty(object)) {
 			return null;
@@ -204,7 +204,7 @@ public class oConvertUtils {
 	/*public static String escapeJava(Object s) {
 		return StringEscapeUtils.escapeJava(getString(s));
 	}*/
-	
+
 	public static String getString(Object object) {
 		if (isEmpty(object)) {
 			return "";
@@ -260,7 +260,7 @@ public class oConvertUtils {
 
 	/**
 	 * 判断一个类是否为基本数据类型。
-	 * 
+	 *
 	 * @param clazz
 	 *            要判断的类。
 	 * @return true 表示为基本数据类型。
@@ -323,7 +323,7 @@ public class oConvertUtils {
 
 	/**
 	 * java去除字符串中的空格、回车、换行符、制表符
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -340,7 +340,7 @@ public class oConvertUtils {
 
 	/**
 	 * 判断元素是否在数组内
-	 * 
+	 *
 	 * @param substring
 	 * @param source
 	 * @return
@@ -367,7 +367,7 @@ public class oConvertUtils {
 
 	/**
 	 * SET转换MAP
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -411,12 +411,12 @@ public class oConvertUtils {
 	private static boolean isInner(long userIp, long begin, long end) {
 		return (userIp >= begin) && (userIp <= end);
 	}
-	
+
 	/**
 	 * 将下划线大写方式命名的字符串转换为驼峰式。
 	 * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。</br>
 	 * 例如：hello_world->helloWorld
-	 * 
+	 *
 	 * @param name
 	 *            转换前的下划线大写方式命名的字符串
 	 * @return 转换后的驼峰式命名的字符串
@@ -429,10 +429,7 @@ public class oConvertUtils {
 			return "";
 		} else if (!name.contains("_")) {
 			// 不含下划线，仅将首字母小写
-			//update-begin--Author:zhoujf  Date:20180503 for：TASK #2500 【代码生成器】代码生成器开发一通用模板生成功能
-			//update-begin--Author:zhoujf  Date:20180503 for：TASK #2500 【代码生成器】代码生成器开发一通用模板生成功能
 			return name.substring(0, 1).toLowerCase() + name.substring(1).toLowerCase();
-			//update-end--Author:zhoujf  Date:20180503 for：TASK #2500 【代码生成器】代码生成器开发一通用模板生成功能
 		}
 		// 用下划线将原始字符串分割
 		String camels[] = name.split("_");
@@ -453,12 +450,12 @@ public class oConvertUtils {
 		}
 		return result.toString();
 	}
-	
+
 	/**
 	 * 将下划线大写方式命名的字符串转换为驼峰式。
 	 * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。</br>
 	 * 例如：hello_world,test_id->helloWorld,testId
-	 * 
+	 *
 	 * @param name
 	 *            转换前的下划线大写方式命名的字符串
 	 * @return 转换后的驼峰式命名的字符串
@@ -476,13 +473,12 @@ public class oConvertUtils {
 		String result = sf.toString();
 		return result.substring(0, result.length() - 1);
 	}
-	
-	//update-begin--Author:zhoujf  Date:20180503 for：TASK #2500 【代码生成器】代码生成器开发一通用模板生成功能
+
 	/**
 	 * 将下划线大写方式命名的字符串转换为驼峰式。(首字母写)
 	 * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。</br>
 	 * 例如：hello_world->HelloWorld
-	 * 
+	 *
 	 * @param name
 	 *            转换前的下划线大写方式命名的字符串
 	 * @return 转换后的驼峰式命名的字符串
@@ -510,8 +506,7 @@ public class oConvertUtils {
 		}
 		return result.toString();
 	}
-	//update-end--Author:zhoujf  Date:20180503 for：TASK #2500 【代码生成器】代码生成器开发一通用模板生成功能
-	
+
 	/**
 	 * 将驼峰命名转化成下划线
 	 * @param para
@@ -519,18 +514,18 @@ public class oConvertUtils {
 	 */
 	public static String camelToUnderline(String para){
         if(para.length()<3){
-        	return para.toLowerCase(); 
+        	return para.toLowerCase();
         }
         StringBuilder sb=new StringBuilder(para);
         int temp=0;//定位
-        //从第三个字符开始 避免命名不规范 
+        //从第三个字符开始 避免命名不规范
         for(int i=2;i<para.length();i++){
             if(Character.isUpperCase(para.charAt(i))){
                 sb.insert(i+temp, "_");
                 temp+=1;
             }
         }
-        return sb.toString().toLowerCase(); 
+        return sb.toString().toLowerCase();
 	}
 
 	/**
@@ -546,10 +541,10 @@ public class oConvertUtils {
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 获取类的所有属性，包括父类
-	 * 
+	 *
 	 * @param object
 	 * @return
 	 */
@@ -564,7 +559,7 @@ public class oConvertUtils {
 		fieldList.toArray(fields);
 		return fields;
 	}
-	
+
 	/**
 	  * 将map的key全部转成小写
 	 * @param list
@@ -574,10 +569,10 @@ public class oConvertUtils {
 		List<Map<String, Object>> select = new ArrayList<>();
 		for (Map<String, Object> row : list) {
 			 Map<String, Object> resultMap = new HashMap<>();
-			 Set<String> keySet = row.keySet(); 
-			 for (String key : keySet) { 
-				 String newKey = key.toLowerCase(); 
-				 resultMap.put(newKey, row.get(key)); 
+			 Set<String> keySet = row.keySet();
+			 for (String key : keySet) {
+				 String newKey = key.toLowerCase();
+				 resultMap.put(newKey, row.get(key));
 			 }
 			 select.add(resultMap);
 		}

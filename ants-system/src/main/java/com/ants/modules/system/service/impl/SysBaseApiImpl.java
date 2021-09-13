@@ -36,11 +36,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 /**
- * @Description: 底层共通业务API，提供其他独立模块调用
- * @Author: scott
- * @Date:2019-4-20
- * @Version:V1.0
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Slf4j
 @Service

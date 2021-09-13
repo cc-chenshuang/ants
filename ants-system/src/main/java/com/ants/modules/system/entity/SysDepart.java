@@ -12,13 +12,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+
 /**
- * <p>
- * 部门表
- * <p>
- *
- * @Author Steve
- * @Since 2019-01-22
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @TableName("sys_depart")

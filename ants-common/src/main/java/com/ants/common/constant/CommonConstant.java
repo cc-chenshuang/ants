@@ -1,5 +1,10 @@
 package com.ants.common.constant;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public interface CommonConstant {
 
     /**

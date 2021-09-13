@@ -11,12 +11,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * <p>
- * 字典表
- * </p>
- *
- * @Author zhangweijian
- * @since 2018-12-28
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

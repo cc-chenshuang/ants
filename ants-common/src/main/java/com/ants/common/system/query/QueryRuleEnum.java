@@ -4,9 +4,9 @@ package com.ants.common.system.query;
 import com.ants.common.utils.oConvertUtils;
 
 /**
- * Query 规则 常量
- * @Author Scott
- * @Date 2019年02月14日
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public enum QueryRuleEnum {
 

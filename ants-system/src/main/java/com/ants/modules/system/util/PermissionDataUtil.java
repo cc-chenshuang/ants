@@ -6,9 +6,11 @@ import com.ants.modules.system.entity.SysPermission;
 
 import java.util.List;
 
+
 /**
- * @Author: scott
- * @Date: 2019-04-03
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class PermissionDataUtil {
 

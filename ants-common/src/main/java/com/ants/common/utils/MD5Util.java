@@ -2,6 +2,11 @@ package com.ants.common.utils;
 
 import java.security.MessageDigest;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class MD5Util {
 
 	public static String byteArrayToHexString(byte b[]) {

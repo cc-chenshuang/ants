@@ -5,13 +5,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
+
 /**
- * <p>
- * 部门表 服务实现类
- * <p>
- *
- * @Author:Steve
- * @Since：   2019-01-22
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface ISysDepartService extends IService<SysDepart>{
 

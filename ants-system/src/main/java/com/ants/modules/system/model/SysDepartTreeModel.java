@@ -1,6 +1,5 @@
 package com.ants.modules.system.model;
 
-
 import com.ants.modules.system.entity.SysDepart;
 
 import java.io.Serializable;
@@ -10,12 +9,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * <p>
- * 部门表 存储树结构数据的实体类
- * <p>
- *
- * @Author Steve
- * @Since 2019-01-22
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class SysDepartTreeModel implements Serializable{
 

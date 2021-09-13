@@ -6,12 +6,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+
 /**
- * @Title: DuplicateCheckVo
- * @Description: 重复校验VO
- * @Author 张代浩
- * @Date 2019-03-25
- * @Version V1.0
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @ApiModel(value="重复校验数据模型",description="重复校验数据模型")

@@ -1,7 +1,10 @@
 package com.ants.modules.monitor.exception;
 
+
 /**
- * Redis 连接异常
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class RedisConnectException extends Exception {
 

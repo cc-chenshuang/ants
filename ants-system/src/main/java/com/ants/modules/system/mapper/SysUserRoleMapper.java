@@ -7,13 +7,11 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+
 /**
- * <p>
- * 用户角色表 Mapper 接口
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
 

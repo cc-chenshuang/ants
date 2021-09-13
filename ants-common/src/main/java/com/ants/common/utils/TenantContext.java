@@ -2,8 +2,11 @@ package com.ants.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
+
 /**
- * 多租户 tenant_id存储器
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Slf4j
 public class TenantContext {

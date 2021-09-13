@@ -14,13 +14,11 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * <p>
- * 字典表 Mapper 接口
- * </p>
- *
- * @Author zhangweijian
- * @since 2018-12-28
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface SysDictMapper extends BaseMapper<SysDict> {
 

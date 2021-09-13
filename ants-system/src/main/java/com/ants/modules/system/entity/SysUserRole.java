@@ -8,13 +8,11 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+
 /**
- * <p>
- * 用户角色表
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -7,7 +7,7 @@ import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.result.Result;
 import com.ants.common.utils.MD5Util;
 import com.ants.common.utils.oConvertUtils;
-import com.ants.modules.system.MenuUtils;
+import com.ants.modules.system.util.MenuUtils;
 import com.ants.modules.system.entity.SysPermission;
 import com.ants.modules.system.entity.SysRolePermission;
 import com.ants.modules.system.model.SysPermissionTree;
@@ -24,13 +24,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 /**
- * <p>
- * 菜单权限表 前端控制器
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Slf4j
 @RestController
@@ -69,7 +67,6 @@ public class SysPermissionController {
         return result;
     }
 
-    /*update_begin author:wuxianquan date:20190908 for:先查询一级菜单，当用户点击展开菜单时加载子菜单 */
     /**
      * 系统菜单列表(一级菜单)
      *
@@ -127,9 +124,7 @@ public class SysPermissionController {
         }
         return result;
     }
-    /*update_end author:wuxianquan date:20190908 for:先查询一级菜单，当用户点击展开菜单时加载子菜单 */
 
-    // update_begin author:sunjianlei date:20200108 for: 新增批量根据父ID查询子级菜单的接口 -------------
     /**
      * 查询子菜单
      *
@@ -206,7 +201,6 @@ public class SysPermissionController {
 //			String username = JwtUtil.getUsername(token);
             String loginId = StpUtil.getLoginIdAsString();
             List<SysPermission> metaList = sysPermissionService.queryByUser(loginId);
-            //update-end-author:taoyan date:20200211 for: TASK #3368 【路由缓存】首页的缓存设置有问题，需要根据后台的路由配置来实现是否缓存
             JSONObject json = new JSONObject();
             JSONArray menujsonArray = new JSONArray();
             this.getPermissionJsonArray(menujsonArray, metaList, null);
@@ -523,14 +517,12 @@ public class SysPermissionController {
                 meta.put("keepAlive", false);
             }
 
-            /*update_begin author:wuxianquan date:20190908 for:往菜单信息里添加外链菜单打开方式 */
             //外链菜单打开方式
             if (permission.isInternalOrExternal()) {
                 meta.put("internalOrExternal", true);
             } else {
                 meta.put("internalOrExternal", false);
             }
-            /* update_end author:wuxianquan date:20190908 for: 往菜单信息里添加外链菜单打开方式*/
 
             meta.put("title", permission.getName());
             if (oConvertUtils.isEmpty(permission.getParentId())) {

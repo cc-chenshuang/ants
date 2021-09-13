@@ -21,13 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+
 /**
- * <p>
- * 角色表 前端控制器
- * </p>
- *
- * @Author scott
- * @since 2018-12-19
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @RestController
 @RequestMapping("/sys/role")

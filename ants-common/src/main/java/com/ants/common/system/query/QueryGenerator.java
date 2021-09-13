@@ -19,6 +19,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Slf4j
 public class QueryGenerator {
     public static final String SQL_RULES_COLUMN = "SQL_RULES_COLUMN";
@@ -215,7 +220,6 @@ public class QueryGenerator {
             String superQueryParams = parameterMap.get(SUPER_QUERY_PARAMS)[0];
             String superQueryMatchType = parameterMap.get(SUPER_QUERY_MATCH_TYPE) != null ? parameterMap.get(SUPER_QUERY_MATCH_TYPE)[0] : MatchTypeEnum.AND.getValue();
             MatchTypeEnum matchType = MatchTypeEnum.getByValue(superQueryMatchType);
-            // update-begin--Author:sunjianlei  Date:20200325 for：高级查询的条件要用括号括起来，防止和用户的其他条件冲突 -------
             try {
                 superQueryParams = URLDecoder.decode(superQueryParams, "UTF-8");
                 List<QueryCondition> conditions = JSON.parseArray(superQueryParams, QueryCondition.class);
@@ -247,9 +251,7 @@ public class QueryGenerator {
                 log.error("--高级查询拼接失败：" + e.getMessage());
                 e.printStackTrace();
             }
-            // update-end--Author:sunjianlei  Date:20200325 for：高级查询的条件要用括号括起来，防止和用户的其他条件冲突 -------
         }
-        //log.info(" superQuery getCustomSqlSegment: "+ queryWrapper.getCustomSqlSegment());
     }
 
     /**
@@ -270,7 +272,6 @@ public class QueryGenerator {
         }
         QueryRuleEnum rule = null;
 
-        //update-begin--Author:scott  Date:20190724 for：initQueryWrapper组装sql查询条件错误 #284-------------------
         //TODO 此处规则，只适用于 le lt ge gt
         // step 2 .>= =<
         if (rule == null && val.length() >= 3) {
@@ -284,7 +285,6 @@ public class QueryGenerator {
                 rule = QueryRuleEnum.getByValue(val.substring(0, 1));
             }
         }
-        //update-end--Author:scott  Date:20190724 for：initQueryWrapper组装sql查询条件错误 #284---------------------
 
         // step 3 like
         if (rule == null && val.contains(STAR)) {
@@ -332,14 +332,12 @@ public class QueryGenerator {
         } else if (rule == QueryRuleEnum.IN) {
             value = val.split(",");
         } else {
-            //update-begin--Author:scott  Date:20190724 for：initQueryWrapper组装sql查询条件错误 #284-------------------
             if (val.startsWith(rule.getValue())) {
                 //TODO 此处逻辑应该注释掉-> 如果查询内容中带有查询匹配规则符号，就会被截取的（比如：>=您好）
                 value = val.replaceFirst(rule.getValue(), "");
             } else if (val.startsWith(rule.getCondition() + QUERY_SEPARATE_KEYWORD)) {
                 value = val.replaceFirst(rule.getCondition() + QUERY_SEPARATE_KEYWORD, "").trim();
             }
-            //update-end--Author:scott  Date:20190724 for：initQueryWrapper组装sql查询条件错误 #284-------------------
         }
         return value;
     }

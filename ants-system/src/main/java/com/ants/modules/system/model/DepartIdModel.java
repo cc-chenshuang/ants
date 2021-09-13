@@ -7,14 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * <p>
- * 部门表 封装树结构的部门的名称的实体类
- * <p>
- *
- * @Author Steve
- * @Since 2019-01-22
- *
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class DepartIdModel implements Serializable {
 

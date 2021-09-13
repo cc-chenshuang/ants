@@ -9,6 +9,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Component
 public class SpringContextUtils implements ApplicationContextAware {
 
@@ -48,7 +53,7 @@ public class SpringContextUtils implements ApplicationContextAware {
 		HttpServletRequest request = getHttpServletRequest();
 		return request.getHeader("Origin");
 	}
-	
+
 	/**
 	 * 通过name获取 Bean.
 	 *

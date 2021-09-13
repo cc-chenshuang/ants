@@ -9,13 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 /**
- * <p>
- * 服务实现类
- * </p>
- *
- * @Author zhangweijian
- * @since 2018-12-28
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Service
 public class SysDictItemServiceImpl extends ServiceImpl<SysDictItemMapper, SysDictItem> implements ISysDictItemService {

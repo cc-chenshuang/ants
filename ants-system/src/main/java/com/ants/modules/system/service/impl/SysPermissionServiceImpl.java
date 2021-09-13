@@ -22,13 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * <p>
- * 菜单权限表 服务实现类
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Service
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission> implements ISysPermissionService {

@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.util.Base64;
 import java.util.Random;
 
+
 /**
- * 登录验证码工具类
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class RandImageUtil {
 

@@ -1,10 +1,10 @@
 package com.ants.common.system.vo;
 
+
 /**
- * @Author qinfeng
- * @Date 2020/2/19 12:01
- * @Description:
- * @Version 1.0
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class SysCategoryModel {
     /**主键*/

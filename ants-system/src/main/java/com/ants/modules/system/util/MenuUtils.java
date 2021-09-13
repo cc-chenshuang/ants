@@ -1,4 +1,4 @@
-package com.ants.modules.system;
+package com.ants.modules.system.util;
 
 
 import com.ants.modules.system.entity.SysPermission;
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author ChenShuang
- * @date: 2020/6/29 13:35
- * @Description: 递归菜单
- */
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class MenuUtils {
 
     public static List<SysPermission> getChildPerms(List<SysPermission> allMenuList) {

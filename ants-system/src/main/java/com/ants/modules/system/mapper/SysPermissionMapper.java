@@ -9,13 +9,11 @@ import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
+
 /**
- * <p>
- * 菜单权限表 Mapper 接口
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 

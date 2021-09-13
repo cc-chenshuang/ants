@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
-  * 树形下拉框
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class TreeSelectModel implements Serializable {
 

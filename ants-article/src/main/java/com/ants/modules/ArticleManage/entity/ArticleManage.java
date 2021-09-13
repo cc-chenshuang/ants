@@ -15,8 +15,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *
- * @TableName article_manage
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @TableName(value ="article_manage")

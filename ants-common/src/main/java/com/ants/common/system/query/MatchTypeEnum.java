@@ -3,9 +3,9 @@ package com.ants.common.system.query;
 import com.ants.common.utils.oConvertUtils;
 
 /**
- * 查询链接规则
- *
- * @Author Sunjianlei
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public enum MatchTypeEnum {
 

@@ -3,13 +3,11 @@ package com.ants.modules.system.service;
 import com.ants.modules.system.entity.SysRolePermission;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+
 /**
- * <p>
- * 角色权限表 服务类
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface ISysRolePermissionService extends IService<SysRolePermission> {
 

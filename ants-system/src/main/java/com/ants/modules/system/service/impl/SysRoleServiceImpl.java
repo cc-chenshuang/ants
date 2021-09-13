@@ -15,13 +15,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
- * <p>
- * 角色表 服务实现类
- * </p>
- *
- * @Author scott
- * @since 2018-12-19
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Service
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {

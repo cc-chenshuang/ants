@@ -16,13 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+
 /**
- * <p>
- * 部门表 服务实现类
- * <p>
- *
- * @Author Steve
- * @Since 2019-01-22
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Service
 public class SysDepartServiceImpl extends ServiceImpl<SysDepartMapper, SysDepart> implements ISysDepartService {

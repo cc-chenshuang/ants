@@ -3,6 +3,11 @@ package com.ants.modules.monitor.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class RedisInfo {
 
 	private static Map<String, String> map = new HashMap<>();

@@ -10,13 +10,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * <p>
- * 字典表 服务类
- * </p>
- *
- * @Author zhangweijian
- * @since 2018-12-28
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface ISysDictService extends IService<SysDict> {
 

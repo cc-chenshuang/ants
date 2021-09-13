@@ -17,7 +17,9 @@ import java.security.NoSuchAlgorithmException;
 import static com.ants.common.utils.FileUtils.FormetFileSize;
 
 /**
- * minio文件上传工具类
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Slf4j
 public class MinioUtil {

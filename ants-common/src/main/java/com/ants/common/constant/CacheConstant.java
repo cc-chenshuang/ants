@@ -1,9 +1,9 @@
 package com.ants.common.constant;
 
 /**
- * @author: huangxutao
- * @date: 2019-06-14
- * @description: 缓存常量
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface CacheConstant {
 

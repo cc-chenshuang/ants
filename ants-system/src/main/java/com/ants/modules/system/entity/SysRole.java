@@ -11,13 +11,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.io.Serializable;
 import java.util.Date;
 
+
 /**
- * <p>
- * 角色表
- * </p>
- *
- * @Author scott
- * @since 2018-12-19
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -31,17 +29,17 @@ public class SysRole implements Serializable {
      */
     @TableId(type = IdType.ID_WORKER_STR)
     private String id;
-    
+
     /**
      * 角色名称
      */
     private String roleName;
-    
+
     /**
      * 角色编码
      */
     private String roleCode;
-    
+
     /**
           * 描述
      */

@@ -24,9 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+
 /**
- * @Author scott
- * @since 2018-12-17
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @RestController
 @RequestMapping("/sys")
@@ -50,12 +52,9 @@ public class LoginController {
         Result<SysLoginModel> result = new Result<SysLoginModel>();
         String username = sysLoginModel.getUsername();
         String password = sysLoginModel.getPassword();
-        //update-begin--Author:scott  Date:20190805 for：暂时注释掉密码加密逻辑，有点问题
         //前端密码加密，后端进行密码解密
         //password = AesEncryptUtil.desEncrypt(sysLoginModel.getPassword().replaceAll("%2B", "\\+")).trim();//密码解密
-        //update-begin--Author:scott  Date:20190805 for：暂时注释掉密码加密逻辑，有点问题
 
-        //update-begin-author:taoyan date:20190828 for:校验验证码
 //        String captcha = sysLoginModel.getCaptcha();
 //        if(captcha==null){
 //            result.error500("验证码无效");
@@ -68,14 +67,11 @@ public class LoginController {
 //			result.error500("验证码错误");
 //			return result;
 //		}
-        //update-end-author:taoyan date:20190828 for:校验验证码
 
         //1. 校验用户是否有效
-        //update-begin-author:wangshuai date:20200601 for: 登录代码验证用户是否注销bug，if条件永远为false
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getUsername, username);
         SysUser sysUser = sysUserService.getOne(queryWrapper);
-        //update-end-author:wangshuai date:20200601 for: 登录代码验证用户是否注销bug，if条件永远为false
         result = sysUserService.checkUserIsEffective(sysUser);
         if (!result.isSuccess()) {
             return result;

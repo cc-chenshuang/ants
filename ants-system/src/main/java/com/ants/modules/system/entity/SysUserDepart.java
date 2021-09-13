@@ -7,6 +7,11 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Data
 @TableName("sys_user_depart")
 public class SysUserDepart implements Serializable {

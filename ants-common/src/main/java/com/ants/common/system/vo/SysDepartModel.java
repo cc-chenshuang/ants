@@ -1,7 +1,10 @@
 package com.ants.common.system.vo;
 
+
 /**
- * lvdandan 部门机构model
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public class SysDepartModel {
     /**ID*/

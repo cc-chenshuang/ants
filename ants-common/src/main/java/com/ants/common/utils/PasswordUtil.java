@@ -28,7 +28,7 @@ public class PasswordUtil {
 
 	/**
 	 * 获取加密算法中使用的盐值,解密中使用的盐值必须与加密中使用的相同才能完成操作. 盐长度必须为8字节
-	 * 
+	 *
 	 * @return byte[] 盐值
 	 * */
 	public static byte[] getSalt() throws Exception {
@@ -45,7 +45,7 @@ public class PasswordUtil {
 
 	/**
 	 * 根据PBE密码生成一把密钥
-	 * 
+	 *
 	 * @param password
 	 *            生成密钥时所使用的密码
 	 * @return Key PBE算法密钥
@@ -70,7 +70,7 @@ public class PasswordUtil {
 
 	/**
 	 * 加密明文字符串
-	 * 
+	 *
 	 * @param plaintext
 	 *            待加密的明文字符串
 	 * @param password
@@ -89,9 +89,7 @@ public class PasswordUtil {
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 
 			cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
-			//update-begin-author:sccott date:20180815 for:中文作为用户名时，加密的密码windows和linux会得到不同的结果 gitee/issues/IZUD7
 			encipheredData = cipher.doFinal(plaintext.getBytes("utf-8"));
-			//update-end-author:sccott date:20180815 for:中文作为用户名时，加密的密码windows和linux会得到不同的结果 gitee/issues/IZUD7
 		} catch (Exception e) {
 		}
 		return bytesToHexString(encipheredData);
@@ -99,7 +97,7 @@ public class PasswordUtil {
 
 	/**
 	 * 解密密文字符串
-	 * 
+	 *
 	 * @param ciphertext
 	 *            待解密的密文字符串
 	 * @param password
@@ -130,7 +128,7 @@ public class PasswordUtil {
 
 	/**
 	 * 将字节数组转换为十六进制字符串
-	 * 
+	 *
 	 * @param src
 	 *            字节数组
 	 * @return
@@ -153,7 +151,7 @@ public class PasswordUtil {
 
 	/**
 	 * 将十六进制字符串转换为字节数组
-	 * 
+	 *
 	 * @param hexString
 	 *            十六进制字符串
 	 * @return

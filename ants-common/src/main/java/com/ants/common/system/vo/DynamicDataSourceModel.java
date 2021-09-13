@@ -3,6 +3,11 @@ package com.ants.common.system.vo;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Data
 public class DynamicDataSourceModel {
 

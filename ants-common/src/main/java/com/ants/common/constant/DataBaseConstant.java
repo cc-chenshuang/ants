@@ -1,6 +1,9 @@
 package com.ants.common.constant;
+
 /**
- * 数据库上下文常量
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface DataBaseConstant {
 	//*********数据库类型****************************************
@@ -39,7 +42,7 @@ public interface DataBaseConstant {
 	 * 数据-系统用户编码（对应登录用户账号）
 	 */
 	public static final String SYS_USER_CODE_TABLE = "sys_user_code";
-	
+
 	/**
 	 * 登录用户真实姓名
 	 */
@@ -65,8 +68,8 @@ public interface DataBaseConstant {
 	 */
 	public static final String SYS_TIME_TABLE = "sys_time";
 	//*********系统上下文变量****************************************
-	
-	
+
+
 	//*********系统建表标准字段****************************************
 	/**
 	 * 创建者登录名称
@@ -100,7 +103,7 @@ public interface DataBaseConstant {
 	 * 更新日期时间
 	 */
 	public static final String UPDATE_TIME_TABLE = "update_time";
-	
+
 	/**
 	 * 业务流程状态
 	 */

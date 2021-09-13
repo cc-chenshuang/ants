@@ -4,13 +4,11 @@ import com.ants.modules.system.entity.SysRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
+
 /**
- * <p>
- * 角色表 服务类
- * </p>
- *
- * @Author scott
- * @since 2018-12-19
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface ISysRoleService extends IService<SysRole> {
 

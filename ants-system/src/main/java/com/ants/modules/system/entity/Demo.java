@@ -8,6 +8,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)

@@ -2,8 +2,11 @@ package com.ants.common.system.vo;
 
 import lombok.Data;
 
+
 /**
- * 字典查询参数实体
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Data
 public class DictQuery {

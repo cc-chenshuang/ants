@@ -3,13 +3,11 @@ package com.ants.modules.system.mapper;
 import com.ants.modules.system.entity.SysRolePermission;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+
 /**
- * <p>
- * 角色权限表 Mapper 接口
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface SysRolePermissionMapper extends BaseMapper<SysRolePermission> {
 

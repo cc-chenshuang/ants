@@ -7,13 +7,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
+
 /**
- * <p>
- * 菜单权限表 服务类
- * </p>
- *
- * @Author scott
- * @since 2018-12-21
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 public interface ISysPermissionService extends IService<SysPermission> {
 

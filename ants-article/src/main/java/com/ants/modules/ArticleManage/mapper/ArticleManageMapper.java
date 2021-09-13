@@ -4,8 +4,10 @@ import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
-* @Entity com.ants.modules.ArticleManage.domain.com.ants.modules.ArticleManage
-*/
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 
 public interface ArticleManageMapper extends BaseMapper<ArticleManage> {
 

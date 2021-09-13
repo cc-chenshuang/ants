@@ -7,6 +7,11 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
@@ -16,12 +21,12 @@ public class DictModel implements Serializable{
 
 	public DictModel() {
 	}
-	
+
 	public DictModel(String value, String text) {
 		this.value = value;
 		this.text = text;
 	}
-	
+
 	/**
 	 * 字典value
 	 */

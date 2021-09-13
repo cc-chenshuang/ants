@@ -28,13 +28,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+
 /**
- * <p>
- * 字典表 前端控制器
- * </p>
- *
- * @Author zhangweijian
- * @since 2018-12-28
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @RestController
 @RequestMapping("/sys/dict")

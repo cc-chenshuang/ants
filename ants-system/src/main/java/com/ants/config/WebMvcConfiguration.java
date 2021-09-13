@@ -9,10 +9,11 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+
 /**
- * Spring Boot 2.0 解决跨域问题
- *
- * @Author
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
  */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {

@@ -2,6 +2,11 @@ package com.ants.common.system.query;
 
 import java.io.Serializable;
 
+/**
+ * TODO
+ * Author Chen
+ * Date   2021/9/7 18:44
+ */
 public class QueryCondition implements Serializable {
 
 	private static final long serialVersionUID = 4740166316629191651L;
