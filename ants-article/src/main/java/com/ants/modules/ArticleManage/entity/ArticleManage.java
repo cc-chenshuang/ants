@@ -1,5 +1,6 @@
 package com.ants.modules.ArticleManage.entity;
 
+import com.ants.common.annotation.Dict;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -54,12 +55,12 @@ public class ArticleManage implements Serializable {
     /**
      * 分类
      */
-    private String sort;
+    private String articleSort;
 
     /**
      * 标签
      */
-    private String lable;
+    private String articleLable;
 
     /**
      * 点赞数
@@ -73,16 +74,28 @@ public class ArticleManage implements Serializable {
     /**
      * 文章类型
      */
+    @Dict(dicCode = "article_type")
     private String articleType;
     /**
      * 发布形式
      */
+    @Dict(dicCode = "publish_form")
     private String publishForm;
+    /**
+     * 原文链接
+     */
+    private String originalTextLink;
+    /**
+     * 原文是否允许转载，或者是否获得作者授权
+     */
+    @Dict(dicCode = "yn")
+    private String isAuthorAuthorization;
     /**
      * 删除状态 0未删除 1删除
      */
     @ApiModelProperty(value = "删除状态 0未删除 1删除")
     @TableLogic
+    @Dict(dicCode = "del_flag")
     private Integer delFlag;
 
     /**
