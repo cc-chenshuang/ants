@@ -1,10 +1,15 @@
 package com.ants.modules.articleSort.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.modules.articleLable.entity.ArticleLable;
+import com.ants.modules.articleLable.vo.ArticleLableVo;
 import com.ants.modules.articleSort.entity.ArticleSort;
 import com.ants.modules.articleSort.service.ArticleSortService;
+import com.ants.modules.articleSort.vo.ArticleSortVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * TODO
@@ -101,4 +108,41 @@ public class ArticleSortController {
         return Result.error("删除失败");
     }
 
+    @GetMapping("/genArticSortList")
+    public Result<?> genArticSortList(@RequestParam(required = false) String name) {
+        LambdaQueryWrapper<ArticleSort> lqw = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(name)) {
+            lqw.like(ArticleSort::getName, name);
+        }
+        List<ArticleSort> list = articleSortService.list(lqw);
+
+        List<ArticleSortVo> articleSortVoList = new ArrayList<>();
+        ArticleSortVo articleSortVo = null;
+        for (ArticleSort articleSort : list) {
+            articleSortVo = new ArticleSortVo();
+            articleSortVo.setKey(articleSort.getId());
+            articleSortVo.setLabel(articleSort.getName());
+            articleSortVoList.add(articleSortVo);
+        }
+        return Result.ok(articleSortVoList);
+    }
+
+    @GetMapping("/getSortByIds")
+    public Result<?> getSortByIds(@RequestParam String ids) {
+        LambdaQueryWrapper<ArticleSort> lqw = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(ids)) {
+            lqw.in(ArticleSort::getId, ids.split(","));
+        }
+        List<ArticleSort> list = articleSortService.list(lqw);
+
+        List<ArticleSortVo> articleSortVoList = new ArrayList<>();
+        ArticleSortVo articleSortVo = null;
+        for (ArticleSort articleSort : list) {
+            articleSortVo = new ArticleSortVo();
+            articleSortVo.setKey(articleSort.getId());
+            articleSortVo.setLabel(articleSort.getName());
+            articleSortVoList.add(articleSortVo);
+        }
+        return Result.ok(articleSortVoList);
+    }
 }

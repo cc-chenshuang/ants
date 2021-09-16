@@ -106,4 +106,15 @@ public class ArticleManageController {
         return Result.error("删除失败");
     }
 
+    /**
+     * @param id
+     * @return
+     * @功能：批量删除
+     */
+    @GetMapping("/getById")
+    public Result<?> getById(@RequestParam(name = "id", required = true) String id) {
+        ArticleManage byId = articleManageService.getById(id);
+        return Result.ok(byId);
+    }
+
 }

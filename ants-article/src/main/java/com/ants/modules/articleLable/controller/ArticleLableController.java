@@ -1,5 +1,6 @@
 package com.ants.modules.articleLable.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
@@ -10,6 +11,8 @@ import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.common.system.result.Result;
 import com.ants.modules.articleLable.entity.ArticleLable;
 import com.ants.modules.articleLable.service.ArticleLableService;
+import com.ants.modules.articleLable.vo.ArticleLableVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -21,7 +24,9 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * TODO
@@ -106,5 +111,45 @@ public class ArticleLableController {
         }
         return Result.error("删除失败");
     }
+
+    @GetMapping("/genArticleLableList")
+    public Result<?> genArticleLableList(@RequestParam(required = false) String name) {
+        LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(name)) {
+            lqw.like(ArticleLable::getName, name);
+        }
+        List<ArticleLable> list = articleLableService.list(lqw);
+
+        List<ArticleLableVo> articleLableVoList = new ArrayList<>();
+        ArticleLableVo articleLableVo = null;
+        for (ArticleLable articleLable : list) {
+            articleLableVo = new ArticleLableVo();
+            articleLableVo.setKey(articleLable.getId());
+            articleLableVo.setLabel(articleLable.getName());
+            articleLableVoList.add(articleLableVo);
+        }
+        return Result.ok(articleLableVoList);
+    }
+
+
+    @GetMapping("/getLableById")
+    public Result<?> getLableById(@RequestParam String ids) {
+        LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        if (StrUtil.isNotBlank(ids)) {
+            lqw.in(ArticleLable::getId, ids.split(","));
+        }
+        List<ArticleLable> list = articleLableService.list(lqw);
+
+        List<ArticleLableVo> articleLableVoList = new ArrayList<>();
+        ArticleLableVo articleLableVo = null;
+        for (ArticleLable articleLable : list) {
+            articleLableVo = new ArticleLableVo();
+            articleLableVo.setKey(articleLable.getId());
+            articleLableVo.setLabel(articleLable.getName());
+            articleLableVoList.add(articleLableVo);
+        }
+        return Result.ok(articleLableVoList);
+    }
+
 
 }
