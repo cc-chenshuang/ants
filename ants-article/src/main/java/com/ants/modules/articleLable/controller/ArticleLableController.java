@@ -12,6 +12,7 @@ import com.ants.common.system.result.Result;
 import com.ants.modules.articleLable.entity.ArticleLable;
 import com.ants.modules.articleLable.service.ArticleLableService;
 import com.ants.modules.articleLable.vo.ArticleLableVo;
+import com.ants.modules.articleSort.entity.ArticleSort;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -51,6 +52,7 @@ public class ArticleLableController {
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         QueryWrapper<ArticleLable> queryWrapper = QueryGenerator.initQueryWrapper(articleLable, req.getParameterMap());
+        queryWrapper.orderByAsc("sort_no");
         Page<ArticleLable> page = new Page<ArticleLable>(pageNo, pageSize);
         IPage<ArticleLable> pageList = articleLableService.page(page, queryWrapper);
         return Result.ok(pageList);
@@ -66,8 +68,29 @@ public class ArticleLableController {
     @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody ArticleLable articleLable) {
+        if (articleLable.getSortNo() == null) {
+            QueryWrapper<ArticleLable> queryWrapper = new QueryWrapper<>();
+            queryWrapper.select("max(sort_no) sortNo");
+            ArticleLable one = articleLableService.getOne(queryWrapper);
+            articleLable.setSortNo(one.getSortNo() + 1);
+        }
         articleLableService.save(articleLable);
         return Result.ok("添加成功！");
+    }
+
+    @AutoLog(value = "文章管理-添加")
+    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @PostMapping(value = "/addLable")
+    public Result<?> addLable(@RequestBody ArticleLable articleLable) {
+        QueryWrapper<ArticleLable> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("max(sort_no) sortNo");
+        ArticleLable one = articleLableService.getOne(queryWrapper);
+        articleLable.setSortNo(one.getSortNo() + 1);
+        articleLableService.save(articleLable);
+        ArticleLableVo articleLableVo = new ArticleLableVo();
+        articleLableVo.setKey(articleLable.getId());
+        articleLableVo.setLabel(articleLable.getName());
+        return Result.ok(articleLableVo);
     }
 
     /**
@@ -118,6 +141,7 @@ public class ArticleLableController {
         if (StrUtil.isNotBlank(name)) {
             lqw.like(ArticleLable::getName, name);
         }
+        lqw.orderByAsc(ArticleLable::getSortNo);
         List<ArticleLable> list = articleLableService.list(lqw);
 
         List<ArticleLableVo> articleLableVoList = new ArrayList<>();

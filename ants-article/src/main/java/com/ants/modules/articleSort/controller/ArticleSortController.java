@@ -47,6 +47,7 @@ public class ArticleSortController {
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
         QueryWrapper<ArticleSort> queryWrapper = QueryGenerator.initQueryWrapper(articleSort, req.getParameterMap());
+        queryWrapper.orderByAsc("sort_no");
         Page<ArticleSort> page = new Page<ArticleSort>(pageNo, pageSize);
         IPage<ArticleSort> pageList = articleSortService.page(page, queryWrapper);
         return Result.ok(pageList);
@@ -64,6 +65,21 @@ public class ArticleSortController {
     public Result<?> add(@RequestBody ArticleSort articleSort) {
         articleSortService.save(articleSort);
         return Result.ok("添加成功！");
+    }
+
+    @AutoLog(value = "文章管理-添加")
+    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @PostMapping(value = "/addSort")
+    public Result<?> addSort(@RequestBody ArticleSort articleSort) {
+        QueryWrapper<ArticleSort> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("max(sort_no) sortNo");
+        ArticleSort one = articleSortService.getOne(queryWrapper);
+        articleSort.setSortNo(one.getSortNo() + 1);
+        articleSortService.save(articleSort);
+        ArticleSortVo articleSortVo = new ArticleSortVo();
+        articleSortVo.setKey(articleSort.getId());
+        articleSortVo.setLabel(articleSort.getName());
+        return Result.ok(articleSortVo);
     }
 
     /**
@@ -114,6 +130,7 @@ public class ArticleSortController {
         if (StrUtil.isNotBlank(name)) {
             lqw.like(ArticleSort::getName, name);
         }
+        lqw.orderByAsc(ArticleSort::getSortNo);
         List<ArticleSort> list = articleSortService.list(lqw);
 
         List<ArticleSortVo> articleSortVoList = new ArrayList<>();
