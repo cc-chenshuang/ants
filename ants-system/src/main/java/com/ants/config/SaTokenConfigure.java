@@ -35,6 +35,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
         releaseList.add("/webjars/**");
         releaseList.add("/swagger-resources/**");
         releaseList.add("/sys/common/static/**");
+        releaseList.add("/articleView/**");
 
         // 注册路由拦截器，自定义验证规则
         registry.addInterceptor(new SaRouteInterceptor((req, res, handler) -> {

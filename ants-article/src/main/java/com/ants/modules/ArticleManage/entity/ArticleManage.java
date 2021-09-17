@@ -55,17 +55,24 @@ public class ArticleManage implements Serializable {
     /**
      * 分类
      */
+    @Dict(dictTable = "article_sort", dicText = "name", dicCode = "id")
     private String articleSort;
 
     /**
      * 标签
      */
+    @Dict(dictTable = "article_lable", dicText = "name", dicCode = "id")
     private String articleLable;
 
     /**
      * 点赞数
      */
     private Integer likesNum;
+
+    /**
+     * 浏览数
+     */
+    private Integer viewsNum;
 
     /**
      * 封面

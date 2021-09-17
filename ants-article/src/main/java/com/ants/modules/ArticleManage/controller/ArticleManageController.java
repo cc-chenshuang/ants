@@ -8,6 +8,7 @@ import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.common.system.result.Result;
+import com.ants.modules.ArticleManage.vo.ArticleManageVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * TODO
@@ -109,12 +111,13 @@ public class ArticleManageController {
     /**
      * @param id
      * @return
-     * @功能：批量删除
+     * @功能：根据id查询
      */
     @GetMapping("/getById")
     public Result<?> getById(@RequestParam(name = "id", required = true) String id) {
         ArticleManage byId = articleManageService.getById(id);
         return Result.ok(byId);
     }
+
 
 }

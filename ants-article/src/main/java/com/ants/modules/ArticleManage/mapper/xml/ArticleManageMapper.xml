@@ -2,23 +2,44 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="ArticleManage.mapper.ArticleManageMapper">
+<mapper namespace="com.ants.modules.ArticleManage.mapper.ArticleManageMapper">
 
-    <resultMap id="BaseResultMap" type="com.ants.modules.ArticleManage.entity.ArticleManage">
-            <id property="id" column="id" jdbcType="VARCHAR"/>
-            <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="content" column="content" jdbcType="VARCHAR"/>
-            <result property="publishTime" column="publish_time" jdbcType="TIMESTAMP"/>
-            <result property="publishState" column="publish_state" jdbcType="VARCHAR"/>
-            <result property="sort" column="sort" jdbcType="VARCHAR"/>
-            <result property="lable" column="lable" jdbcType="VARCHAR"/>
-            <result property="likesNum" column="likes_num" jdbcType="INTEGER"/>
-            <result property="viewsNum" column="views_num" jdbcType="INTEGER"/>
-    </resultMap>
-
-    <sql id="Base_Column_List">
-        id,title,content,
-        publish_time,publish_state,sort,
-        lable,likes_num,views_num
-    </sql>
+    <select id="initArticleSort" resultType="com.ants.modules.ArticleManage.vo.ArticleManageVo">
+        SELECT
+        COUNT( a.article_sort ) number,
+        b.`name` value,
+	    b.id
+        FROM
+        (
+        SELECT
+        SUBSTRING_INDEX( SUBSTRING_INDEX( a.article_sort, ',', b.help_topic_id + 1 ), ',', - 1 ) AS article_sort
+        FROM
+        `article_manage` AS a
+        JOIN mysql.help_topic AS b ON b.help_topic_id <![CDATA[ < ]]> ( length( a.article_sort ) - length( REPLACE ( a.article_sort, ',', '' ) ) + 1 )
+        WHERE
+        a.del_flag = '0'
+        ) a
+        INNER JOIN ( SELECT id, `name` FROM article_sort ) b ON a.article_sort = b.id
+        GROUP BY
+        a.article_sort
+    </select>
+    <select id="initArticleLable" resultType="com.ants.modules.ArticleManage.vo.ArticleManageVo">
+        SELECT
+        COUNT( a.article_lable ) number,
+        b.`name` value,
+	    b.id
+        FROM
+        (
+        SELECT
+        SUBSTRING_INDEX( SUBSTRING_INDEX( a.article_lable, ',', b.help_topic_id + 1 ), ',', - 1 ) AS article_lable
+        FROM
+        `article_manage` AS a
+        JOIN mysql.help_topic AS b ON b.help_topic_id <![CDATA[ < ]]> ( length( a.article_lable ) - length( REPLACE ( a.article_lable, ',', '' ) ) + 1 )
+        WHERE
+        a.del_flag = '0'
+        ) a
+        INNER JOIN ( SELECT id, `name` FROM article_lable ) b ON a.article_lable = b.id
+        GROUP BY
+        a.article_lable
+    </select>
 </mapper>
