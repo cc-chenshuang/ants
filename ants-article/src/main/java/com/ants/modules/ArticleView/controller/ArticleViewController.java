@@ -1,5 +1,6 @@
 package com.ants.modules.ArticleView.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
@@ -64,17 +65,32 @@ public class ArticleViewController {
      * @功能：查询文章列表
      */
     @GetMapping("/getArticleList")
-    public Result<?> getArticleList(@RequestParam String type) {
+    public Result<?> getArticleList(@RequestParam String type,
+                                    @RequestParam String sortId,
+                                    @RequestParam String lableId) {
         List<ArticleManage> list = null;
-        LambdaQueryWrapper<ArticleManage> lqw = new LambdaQueryWrapper<>();
+        QueryWrapper<ArticleManage> qw = new QueryWrapper<>();
+
         if ("1".equals(type)) {
-            lqw.clear();
-            lqw.orderByDesc(ArticleManage::getCreateTime);
-            list = articleManageService.list(lqw);
+            qw.clear();
+            if (StrUtil.isNotBlank(sortId)) {
+                QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
+            }
+            if (StrUtil.isNotBlank(lableId)) {
+                QueryGenerator.assM2MQueryWrapper(qw, "article_lable", lableId);
+            }
+            qw.orderByDesc("create_time");
+            list = articleManageService.list(qw);
         } else {
-            lqw.clear();
-            lqw.orderByDesc(ArticleManage::getViewsNum).orderByDesc(ArticleManage::getLikesNum);
-            list = articleManageService.list(lqw);
+            qw.clear();
+            if (StrUtil.isNotBlank(sortId)) {
+                QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
+            }
+            if (StrUtil.isNotBlank(lableId)) {
+                QueryGenerator.assM2MQueryWrapper(qw, "article_lable", lableId);
+            }
+            qw.orderByDesc("views_num").orderByDesc("likes_num");
+            list = articleManageService.list(qw);
         }
         return Result.ok(list);
     }
@@ -82,7 +98,7 @@ public class ArticleViewController {
     /**
      * @param id
      * @return
-     * @功能：查询文章  根据id
+     * @功能：查询文章 根据id
      */
     @GetMapping("/getArticleById")
     public Result<?> getArticleById(@RequestParam String id) {

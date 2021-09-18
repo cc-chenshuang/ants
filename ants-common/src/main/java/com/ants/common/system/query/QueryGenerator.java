@@ -10,6 +10,7 @@ import com.ants.common.utils.oConvertUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
@@ -475,5 +476,18 @@ public class QueryGenerator {
                 || "sort".equals(name) || "order".equals(name);
     }
 
-
+    /**
+     * 组装字段的多对多查询条件（数据库中该字段以逗号分隔，查询条件中也以逗号分隔）
+     * @param queryWrapper
+     * @param field 数据库对应字段
+     * @param mParams 传入参数
+     */
+    public static void assM2MQueryWrapper(QueryWrapper<?> queryWrapper, String field, String mParams) {
+        if(StringUtils.isNotEmpty(mParams)){
+            String[] param = mParams.split(",");
+            for(int i=0; i<param.length; i++){
+                queryWrapper.apply(StringUtils.isNotEmpty(param[i]),"FIND_IN_SET ('" + param[i] + "',"+ field +")");
+            }
+        }
+    }
 }
