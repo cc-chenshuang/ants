@@ -38,9 +38,13 @@ public class ArticleManage implements Serializable {
     private String title;
 
     /**
-     * 内容
+     * 内容md
      */
     private String content;
+    /**
+     * 内容html
+     */
+    private String html;
 
     /**
      * 发布时间
