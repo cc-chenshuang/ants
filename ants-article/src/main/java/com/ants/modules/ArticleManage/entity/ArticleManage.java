@@ -1,6 +1,7 @@
 package com.ants.modules.ArticleManage.entity;
 
 import com.ants.common.annotation.Dict;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -72,6 +73,10 @@ public class ArticleManage implements Serializable {
      * 点赞数
      */
     private Integer likesNum;
+    /**
+     * 收藏数
+     */
+    private Integer collectNum;
 
     /**
      * 浏览数
@@ -141,4 +146,15 @@ public class ArticleManage implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "创建时间")
     private Date updateTime;
+
+    /**
+     * 是否点赞
+     */
+    @TableField(exist = false)
+    private boolean isLikes = false;
+    /**
+     * 是否收藏
+     */
+    @TableField(exist = false)
+    private boolean isCollect = false;
 }

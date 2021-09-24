@@ -1,11 +1,14 @@
 package com.ants.modules.ArticleView.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
+import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.modules.ArticleManage.vo.ArticleManageVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -16,6 +19,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +40,8 @@ public class ArticleViewController {
 
     @Autowired
     ArticleManageService articleManageService;
+    @Autowired
+    ArticleLikeCollectionService articleLikeCollectionService;
 
     /**
      * @return
@@ -91,6 +97,7 @@ public class ArticleViewController {
             qw.orderByDesc("views_num").orderByDesc("likes_num");
             list = articleManageService.list(qw);
         }
+
         return Result.ok(list);
     }
 
@@ -103,6 +110,21 @@ public class ArticleViewController {
     public Result<?> getArticleById(@RequestParam String id) {
         List<ArticleManage> list = new ArrayList<>();
         ArticleManage byId = articleManageService.getById(id);
+        boolean login = StpUtil.isLogin();
+        if (login){
+            String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
+            LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(ArticleLikeCollection::getUsername, username)
+                    .eq(ArticleLikeCollection::getArticleId, id);
+            List<ArticleLikeCollection> list1 = articleLikeCollectionService.list(lqw);
+            for (ArticleLikeCollection articleLikeCollection : list1) {
+                if ("1".equals(articleLikeCollection.getType())) {
+                    byId.setCollect(true);
+                } else {
+                    byId.setLikes(true);
+                }
+            }
+        }
         IPage<ArticleManage> page = new Page<>();
         list.add(byId);
         page.setRecords(list);
@@ -139,12 +161,62 @@ public class ArticleViewController {
 
     /**
      * @return
-     * @功能：全文检索    根据标题、内容检索文章
+     * @功能：全文检索 根据标题、内容检索文章
      */
     @GetMapping("/searchAllActive")
     public Result<?> searchAllActive(@RequestParam String value) {
+
         List<ArticleManage> list = articleManageService.searchAllActive(value);
         return Result.ok(list);
     }
 
+    /**
+     * 收藏/点赞
+     * 1：收藏；2：点赞
+     *
+     * @param articleLikeCollection
+     * @return
+     */
+    @PostMapping("/likeCollection")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<?> likeCollection(@RequestBody ArticleLikeCollection articleLikeCollection) {
+        String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
+        articleLikeCollection.setUsername(username);
+        articleLikeCollectionService.save(articleLikeCollection);
+        ArticleManage byId = articleManageService.getById(articleLikeCollection.getArticleId());
+        if ("1".equals(articleLikeCollection.getType())) {
+            byId.setCollectNum(byId.getCollectNum() + 1);
+        } else {
+            byId.setLikesNum(byId.getLikesNum() + 1);
+        }
+        articleManageService.updateById(byId);
+        return Result.ok();
+    }
+
+    /**
+     * 取消收藏/取消点赞
+     *
+     * @param type
+     * @param articleId
+     * @return
+     */
+    @DeleteMapping("/cancelLikeCollection")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<?> cancelLikeCollection(@RequestParam String type,
+                                          @RequestParam String articleId) {
+        String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
+        LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLikeCollection::getType, type)
+                .eq(ArticleLikeCollection::getUsername, username)
+                .eq(ArticleLikeCollection::getArticleId, articleId);
+        articleLikeCollectionService.remove(lqw);
+        ArticleManage byId = articleManageService.getById(articleId);
+        if ("1".equals(type)) {
+            byId.setCollectNum(byId.getCollectNum() - 1);
+        } else {
+            byId.setLikesNum(byId.getLikesNum() - 1);
+        }
+        articleManageService.updateById(byId);
+        return Result.ok();
+    }
 }
