@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO
@@ -29,5 +30,20 @@ public class ArticleManageServiceImpl extends ServiceImpl<ArticleManageMapper, A
     @Override
     public List<ArticleManageVo> initArticleLable() {
         return articleManageMapper.initArticleLable();
+    }
+
+    @Override
+    public List<Map<String, Object>> articleGroupByCreateTime() {
+        return articleManageMapper.articleGroupByCreateTime();
+    }
+
+    @Override
+    public List<ArticleManage> getArticleByTime(String time) {
+        return articleManageMapper.getArticleByTime(time);
+    }
+
+    @Override
+    public List<ArticleManage> searchAllActive(String value) {
+        return articleManageMapper.searchAllActive(value);
     }
 }

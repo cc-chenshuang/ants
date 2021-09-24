@@ -42,4 +42,32 @@
         GROUP BY
         a.article_lable
     </select>
+    <select id="articleGroupByCreateTime" resultType="java.util.Map">
+        SELECT LEFT
+            ( create_time, 7 ) createMonth,
+            count( 1 ) sum
+        FROM
+            `article_manage`
+        GROUP BY
+            LEFT ( create_time, 7 )
+        ORDER BY
+            LEFT ( create_time, 7 ) DESC
+    </select>
+    <select id="getArticleByTime" parameterType="string" resultType="com.ants.modules.ArticleManage.entity.ArticleManage">
+        SELECT
+            *
+        FROM
+            `article_manage`
+        WHERE
+            LEFT ( create_time, 7 ) = #{time}
+        order by create_time desc
+    </select>
+    <select id="searchAllActive" parameterType="string" resultType="com.ants.modules.ArticleManage.entity.ArticleManage">
+        SELECT
+            *
+        FROM
+            article_manage
+        WHERE
+            MATCH ( title, content ) against ( #{value} );
+    </select>
 </mapper>

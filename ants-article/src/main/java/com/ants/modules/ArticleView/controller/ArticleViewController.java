@@ -19,9 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * TODO
@@ -108,6 +107,44 @@ public class ArticleViewController {
         list.add(byId);
         page.setRecords(list);
         return Result.ok(page);
+    }
+
+    /**
+     * @return
+     * @功能：查询文章 根据id
+     */
+    @GetMapping("/articleGroupByCreateTime")
+    public Result<?> articleGroupByCreateTime() {
+        List<Map<String, Object>> listMaps = articleManageService.articleGroupByCreateTime();
+        listMaps.forEach(e -> {
+            String createMonth = String.valueOf(e.get("createMonth"));
+            List<ArticleManage> list = articleManageService.getArticleByTime(createMonth);
+            e.put("data", list);
+        });
+        Map<String, List<Map<String, Object>>> map = listMaps.stream().collect(Collectors.groupingBy(e -> String.valueOf(e.get("createMonth")).substring(0, 4)));
+        return Result.ok(map);
+    }
+
+    /**
+     * @return
+     * @功能：查询文章 根据id
+     */
+    @GetMapping("/getArticleByTime")
+    public Result<?> getArticleByTime(@RequestParam String time) {
+        List<ArticleManage> list = articleManageService.getArticleByTime(time);
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
+    }
+
+    /**
+     * @return
+     * @功能：全文检索    根据标题、内容检索文章
+     */
+    @GetMapping("/searchAllActive")
+    public Result<?> searchAllActive(@RequestParam String value) {
+        List<ArticleManage> list = articleManageService.searchAllActive(value);
+        return Result.ok(list);
     }
 
 }

@@ -83,6 +83,11 @@ public class ArticleManage implements Serializable {
      */
     private String cover;
     /**
+     * 封面
+     */
+    @Dict(dicCode = "yn")
+    private String isCover;
+    /**
      * 文章类型
      */
     @Dict(dicCode = "article_type")
