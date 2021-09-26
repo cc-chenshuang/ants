@@ -151,10 +151,10 @@ public class ArticleManage implements Serializable {
      * 是否点赞
      */
     @TableField(exist = false)
-    private boolean isLikes = false;
+    private String isLikes;
     /**
      * 是否收藏
      */
     @TableField(exist = false)
-    private boolean isCollect = false;
+    private String isCollect;
 }

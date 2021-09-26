@@ -1,6 +1,7 @@
 package com.ants.modules.ArticleView.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
@@ -111,7 +112,7 @@ public class ArticleViewController {
         List<ArticleManage> list = new ArrayList<>();
         ArticleManage byId = articleManageService.getById(id);
         boolean login = StpUtil.isLogin();
-        if (login){
+        if (login) {
             String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
             LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
             lqw.eq(ArticleLikeCollection::getUsername, username)
@@ -119,9 +120,9 @@ public class ArticleViewController {
             List<ArticleLikeCollection> list1 = articleLikeCollectionService.list(lqw);
             for (ArticleLikeCollection articleLikeCollection : list1) {
                 if ("1".equals(articleLikeCollection.getType())) {
-                    byId.setCollect(true);
+                    byId.setIsCollect("1");
                 } else {
-                    byId.setLikes(true);
+                    byId.setIsLikes("1");
                 }
             }
         }
@@ -143,8 +144,12 @@ public class ArticleViewController {
             List<ArticleManage> list = articleManageService.getArticleByTime(createMonth);
             e.put("data", list);
         });
+        List<List<Map<String, Object>>> list = new LinkedList<>();
         Map<String, List<Map<String, Object>>> map = listMaps.stream().collect(Collectors.groupingBy(e -> String.valueOf(e.get("createMonth")).substring(0, 4)));
-        return Result.ok(map);
+        for (Map.Entry<String, List<Map<String, Object>>> entry : map.entrySet()) {
+            list.add(entry.getValue());
+        }
+        return Result.ok(list);
     }
 
     /**
@@ -218,5 +223,22 @@ public class ArticleViewController {
         }
         articleManageService.updateById(byId);
         return Result.ok();
+    }
+
+
+    /**
+     * 收藏夹
+     *
+     * @return
+     */
+    @GetMapping("/myFavorites")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<?> myFavorites() {
+        String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
+
+        List<Map<String, String>> list = articleLikeCollectionService.myFavorites(username);
+
+
+        return Result.ok(list);
     }
 }

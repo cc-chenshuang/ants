@@ -4,6 +4,7 @@ import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
 import com.ants.modules.ArticleManage.mapper.ArticleLikeCollectionMapper;
 import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,4 +17,12 @@ import java.util.Map;
  */
 @Service
 public class ArticleLikeCollectionServiceImpl extends ServiceImpl<ArticleLikeCollectionMapper, ArticleLikeCollection> implements ArticleLikeCollectionService {
+
+    @Autowired
+    ArticleLikeCollectionMapper articleLikeCollectionMapper;
+
+    @Override
+    public List<Map<String, String>> myFavorites(String username) {
+        return articleLikeCollectionMapper.myFavorites(username);
+    }
 }

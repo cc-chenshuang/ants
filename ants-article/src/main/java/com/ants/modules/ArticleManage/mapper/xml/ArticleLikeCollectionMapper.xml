@@ -5,4 +5,19 @@
 <mapper namespace="com.ants.modules.ArticleManage.mapper.ArticleLikeCollectionMapper">
 
 
+    <select id="myFavorites" resultType="java.util.Map" parameterType="string">
+        SELECT
+            LEFT ( a.create_time, 10 ) createTime,
+            b.title,
+            b.html,
+            b.id
+        FROM
+            article_like_collection a
+                LEFT JOIN article_manage b ON a.article_id = b.id
+        WHERE
+            a.type = '1'
+          AND a.username = #{username}
+        ORDER BY
+            a.create_time DESC
+    </select>
 </mapper>
