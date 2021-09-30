@@ -115,7 +115,7 @@ public class ArticleManage implements Serializable {
      * 删除状态 0未删除 1删除
      */
     @ApiModelProperty(value = "删除状态 0未删除 1删除")
-    @TableLogic
+//    @TableLogic
     @Dict(dicCode = "del_flag")
     private Integer delFlag;
 
@@ -123,6 +123,7 @@ public class ArticleManage implements Serializable {
      * 创建人
      */
     @ApiModelProperty(value = "创建人")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     private String createBy;
 
     /**
@@ -137,6 +138,7 @@ public class ArticleManage implements Serializable {
      * 修改人
      */
     @ApiModelProperty(value = "创建人")
+    @Dict(dictTable = "sys_user", dicText = "realname", dicCode = "username")
     private String updateBy;
 
     /**
@@ -157,4 +159,9 @@ public class ArticleManage implements Serializable {
      */
     @TableField(exist = false)
     private String isCollect;
+    /**
+     * 用户头像
+     */
+    @TableField(exist = false)
+    private String userAvatar;
 }

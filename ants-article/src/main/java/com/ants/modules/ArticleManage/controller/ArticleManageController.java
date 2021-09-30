@@ -1,5 +1,6 @@
 package com.ants.modules.ArticleManage.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
@@ -45,6 +46,24 @@ public class ArticleManageController {
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
+        String username = StpUtil.getLoginIdAsString();
+        articleManage.setCreateBy(username);
+        articleManage.setDelFlag(0);
+        QueryWrapper<ArticleManage> queryWrapper = QueryGenerator.initQueryWrapper(articleManage, req.getParameterMap());
+        Page<ArticleManage> page = new Page<ArticleManage>(pageNo, pageSize);
+        IPage<ArticleManage> pageList = articleManageService.page(page, queryWrapper);
+        return Result.ok(pageList);
+    }
+
+
+    @AutoLog(value = "回收站-列表")
+    @ApiOperation(value = "回收站-列表", notes = "回收站-列表")
+    @GetMapping("/deleteList")
+    public Result<?> deleteList(ArticleManage articleManage,
+                                @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                HttpServletRequest req) {
+        articleManage.setDelFlag(1);
         QueryWrapper<ArticleManage> queryWrapper = QueryGenerator.initQueryWrapper(articleManage, req.getParameterMap());
         Page<ArticleManage> page = new Page<ArticleManage>(pageNo, pageSize);
         IPage<ArticleManage> pageList = articleManageService.page(page, queryWrapper);
@@ -79,6 +98,20 @@ public class ArticleManageController {
         articleManageService.updateById(articleManage);
         return Result.ok("编辑成功!");
     }
+    /**
+     * 恢复
+     *
+     * @param articleManage
+     * @return
+     */
+    @AutoLog(value = "文章管理-恢复")
+    @ApiOperation(value = "文章管理-恢复", notes = "文章管理-恢复")
+    @PutMapping(value = "/recovery")
+    public Result<?> recovery(@RequestBody ArticleManage articleManage) {
+        articleManage.setDelFlag(0);
+        articleManageService.updateById(articleManage);
+        return Result.ok("恢复成功!");
+    }
 
     /**
      * @param id
@@ -87,6 +120,22 @@ public class ArticleManageController {
      */
     @DeleteMapping("/delete")
     public Result<?> delete(@RequestParam(name = "id", required = true) String id) {
+//        boolean ok = articleManageService.removeById(id);
+        ArticleManage byId = articleManageService.getById(id);
+        byId.setDelFlag(1);
+        boolean ok = articleManageService.updateById(byId);
+        if (ok) {
+            return Result.ok("删除成功");
+        }
+        return Result.error("删除失败");
+    }
+    /**
+     * @param id
+     * @return
+     * @功能：彻底删除
+     */
+    @DeleteMapping("/thoroughDelete")
+    public Result<?> thoroughDelete(@RequestParam(name = "id", required = true) String id) {
         boolean ok = articleManageService.removeById(id);
         if (ok) {
             return Result.ok("删除成功");

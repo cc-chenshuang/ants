@@ -5,8 +5,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
+import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.common.system.vo.LoginUser;
 import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
@@ -43,6 +45,8 @@ public class ArticleViewController {
     ArticleManageService articleManageService;
     @Autowired
     ArticleLikeCollectionService articleLikeCollectionService;
+    @Autowired
+    ISysBaseAPI sysBaseAPI;
 
     /**
      * @return
@@ -79,6 +83,7 @@ public class ArticleViewController {
 
         if ("1".equals(type)) {
             qw.clear();
+            qw.eq("del_flag", 0);
             if (StrUtil.isNotBlank(sortId)) {
                 QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
             }
@@ -89,6 +94,7 @@ public class ArticleViewController {
             list = articleManageService.list(qw);
         } else {
             qw.clear();
+            qw.eq("del_flag", 0);
             if (StrUtil.isNotBlank(sortId)) {
                 QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
             }
@@ -98,8 +104,13 @@ public class ArticleViewController {
             qw.orderByDesc("views_num").orderByDesc("likes_num");
             list = articleManageService.list(qw);
         }
-
-        return Result.ok(list);
+        for (ArticleManage articleManage : list) {
+            LoginUser loginUser = sysBaseAPI.getUserByName(articleManage.getCreateBy());
+            articleManage.setUserAvatar(loginUser.getAvatar());
+        }
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
     }
 
     /**
@@ -134,7 +145,7 @@ public class ArticleViewController {
 
     /**
      * @return
-     * @功能：查询文章 根据id
+     * @功能：归档 根据id
      */
     @GetMapping("/articleGroupByCreateTime")
     public Result<?> articleGroupByCreateTime() {
@@ -172,7 +183,13 @@ public class ArticleViewController {
     public Result<?> searchAllActive(@RequestParam String value) {
 
         List<ArticleManage> list = articleManageService.searchAllActive(value);
-        return Result.ok(list);
+        for (ArticleManage articleManage : list) {
+            LoginUser loginUser = sysBaseAPI.getUserByName(articleManage.getCreateBy());
+            articleManage.setUserAvatar(loginUser.getAvatar());
+        }
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
     }
 
     /**

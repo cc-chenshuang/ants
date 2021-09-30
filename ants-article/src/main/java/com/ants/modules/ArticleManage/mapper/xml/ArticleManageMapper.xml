@@ -48,6 +48,7 @@
             count( 1 ) sum
         FROM
             `article_manage`
+        where del_flag = '0'
         GROUP BY
             LEFT ( create_time, 7 )
         ORDER BY
@@ -58,8 +59,8 @@
             *
         FROM
             `article_manage`
-        WHERE
-            LEFT ( create_time, 7 ) = #{time}
+        WHERE del_flag = '0'
+        and LEFT ( create_time, 7 ) = #{time}
         order by create_time desc
     </select>
     <select id="searchAllActive" parameterType="string" resultType="com.ants.modules.ArticleManage.entity.ArticleManage">
@@ -67,7 +68,7 @@
             *
         FROM
             article_manage
-        WHERE
-            MATCH ( title, content ) against ( #{value} );
+        WHERE del_flag = '0'
+        and MATCH ( title, content ) against ( #{value} );
     </select>
 </mapper>
