@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,8 @@ public class ArticleManageController {
 
     @Autowired
     ArticleManageService articleManageService;
+    @Autowired
+    private AmqpTemplate rabbitTemplate;
 
     @AutoLog(value = "文章管理-列表")
     @ApiOperation(value = "文章管理-列表", notes = "文章管理-列表")
@@ -82,6 +85,8 @@ public class ArticleManageController {
     public Result<?> add(@RequestBody ArticleManage articleManage) {
         articleManage.setDelFlag(CommonConstant.DEL_FLAG_0);
         articleManageService.save(articleManage);
+        // 推送消息队列
+        rabbitTemplate.convertAndSend("pushBaiDuQueue", "http://wxmin.cn/articleDetails/" + articleManage.getId());
         return Result.ok("添加成功！");
     }
 
@@ -98,6 +103,7 @@ public class ArticleManageController {
         articleManageService.updateById(articleManage);
         return Result.ok("编辑成功!");
     }
+
     /**
      * 恢复
      *
@@ -129,6 +135,7 @@ public class ArticleManageController {
         }
         return Result.error("删除失败");
     }
+
     /**
      * @param id
      * @return

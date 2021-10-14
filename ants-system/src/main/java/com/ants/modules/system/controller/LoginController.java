@@ -2,11 +2,11 @@ package com.ants.modules.system.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.result.Result;
-import com.ants.common.utils.MD5Util;
-import com.ants.common.utils.PasswordUtil;
-import com.ants.common.utils.RandImageUtil;
-import com.ants.common.utils.RedisUtil;
+import com.ants.common.utils.*;
 import com.ants.modules.system.entity.SysUser;
 import com.ants.modules.system.model.SysLoginModel;
 import com.ants.modules.system.service.ISysDictService;
@@ -173,4 +173,23 @@ public class LoginController {
         return Result.ok();
     }
 
+    @PostMapping("/register")
+    public Result<?> register(@RequestBody JSONObject jsonObject) {
+        redisUtil.get("");
+        try {
+            SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+            user.setCreateTime(new Date());//设置创建时间
+            String salt = oConvertUtils.randomGen(8);
+            user.setSalt(salt);
+            String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
+            user.setPassword(passwordEncode);
+            user.setStatus(1);
+            user.setDelFlag(CommonConstant.DEL_FLAG_0);
+            sysUserService.addUserWithRole(user, "1446724729018728450");
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.error("操作失败");
+        }
+        return Result.ok("添加成功！");
+    }
 }

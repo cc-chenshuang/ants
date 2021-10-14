@@ -1,29 +1,27 @@
-package com.ants.modules.system.service.impl;
+package com.ants.modules.sendMail.service.impl;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HtmlUtil;
-import com.ants.common.utils.MinioUtil;
+import com.ants.common.system.result.Result;
+import com.ants.common.utils.RedisUtil;
 import com.ants.common.utils.oConvertUtils;
-import com.ants.modules.system.entity.MailConfig;
-import com.ants.modules.system.entity.SendMailHistory;
-import com.ants.modules.system.mapper.SendMailHistoryMapper;
-import com.ants.modules.system.service.MailConfigService;
-import com.ants.modules.system.service.SendMailHistoryService;
-import com.ants.modules.system.vo.SendMailVo;
+import com.ants.modules.sendMail.entity.MailConfig;
+import com.ants.modules.sendMail.entity.SendMailHistory;
+import com.ants.modules.sendMail.mapper.SendMailHistoryMapper;
+import com.ants.modules.sendMail.service.MailConfigService;
+import com.ants.modules.sendMail.service.SendMailHistoryService;
+import com.ants.modules.sendMail.vo.SendMailVo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.activation.DataHandler;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -38,14 +36,17 @@ import java.util.*;
 @Slf4j
 public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMapper, SendMailHistory> implements SendMailHistoryService {
 
-    @Autowired
-    MailConfigService mailConfigService;
     @Value(value = "${ants.minio.bucketName}")
     private String bucketName;
     @Value(value = "${ants.minio.minio_url}")
     private String minioUrl;
     @Value(value = "${ants.path.upload}")
     private String uploadpath;
+
+    @Autowired
+    MailConfigService mailConfigService;
+    @Autowired
+    RedisUtil redisUtil;
 
     @Override
     public boolean sendMail(SendMailVo sendMailVo) {
@@ -57,6 +58,23 @@ public class SendMailHistoryServiceImpl extends ServiceImpl<SendMailHistoryMappe
         sendMailHistory.setAddressee(addressees);
         boolean flag = this.sendMailUtil(sendMailHistory, sendMailVo.getUploadFile());
         return flag;
+    }
+
+    @Override
+    public Result<?> sendCaptcha(String email) {
+        String code = RandomUtil.randomNumbers(4);
+        boolean captchaCode = redisUtil.set("captchaCode:" + email, code, 60);
+        if (captchaCode) {
+            SendMailHistory sendMailHistory = new SendMailHistory();
+            sendMailHistory.setTitle("Mr.Chen Blog");
+            sendMailHistory.setContent("此信息由Mr.Chen Blog网站发出；您的验证码为：" + code);
+            sendMailHistory.setAddressee(email);
+            boolean flag = this.sendMailUtil(sendMailHistory, null);
+            if (flag) {
+                return Result.ok(code);
+            }
+        }
+        return Result.error(code);
     }
 
     /**

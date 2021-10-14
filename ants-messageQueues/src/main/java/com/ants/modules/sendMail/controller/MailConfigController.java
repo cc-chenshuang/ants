@@ -1,8 +1,8 @@
-package com.ants.modules.system.controller;
+package com.ants.modules.sendMail.controller;
 
 import com.ants.common.system.result.Result;
-import com.ants.modules.system.entity.MailConfig;
-import com.ants.modules.system.service.MailConfigService;
+import com.ants.modules.sendMail.entity.MailConfig;
+import com.ants.modules.sendMail.service.MailConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

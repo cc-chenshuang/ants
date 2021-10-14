@@ -1,4 +1,4 @@
-package com.ants.modules.system.vo;
+package com.ants.modules.sendMail.vo;
 
 import lombok.Data;
 

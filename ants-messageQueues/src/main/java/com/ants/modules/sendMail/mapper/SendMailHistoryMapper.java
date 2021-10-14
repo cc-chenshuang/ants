@@ -1,6 +1,6 @@
-package com.ants.modules.system.mapper;
+package com.ants.modules.sendMail.mapper;
 
-import com.ants.modules.system.entity.SendMailHistory;
+import com.ants.modules.sendMail.entity.SendMailHistory;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

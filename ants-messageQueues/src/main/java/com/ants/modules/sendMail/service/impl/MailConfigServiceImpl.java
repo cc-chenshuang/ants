@@ -1,8 +1,8 @@
-package com.ants.modules.system.service.impl;
+package com.ants.modules.sendMail.service.impl;
 
-import com.ants.modules.system.entity.MailConfig;
-import com.ants.modules.system.mapper.MailConfigMapper;
-import com.ants.modules.system.service.MailConfigService;
+import com.ants.modules.sendMail.entity.MailConfig;
+import com.ants.modules.sendMail.mapper.MailConfigMapper;
+import com.ants.modules.sendMail.service.MailConfigService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

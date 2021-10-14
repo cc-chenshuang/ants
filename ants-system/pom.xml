@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>com.ants</groupId>
-            <artifactId>ants-mail</artifactId>
+            <artifactId>ants-messageQueues</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

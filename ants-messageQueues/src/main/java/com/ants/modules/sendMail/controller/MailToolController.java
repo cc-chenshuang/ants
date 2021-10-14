@@ -1,10 +1,10 @@
-package com.ants.modules.system.controller;
+package com.ants.modules.sendMail.controller;
 
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
-import com.ants.modules.system.entity.SendMailHistory;
-import com.ants.modules.system.service.SendMailHistoryService;
-import com.ants.modules.system.vo.SendMailVo;
+import com.ants.modules.sendMail.entity.SendMailHistory;
+import com.ants.modules.sendMail.service.SendMailHistoryService;
+import com.ants.modules.sendMail.vo.SendMailVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * TODO 邮件工具-发送记录
@@ -30,6 +29,12 @@ public class MailToolController {
 
     @Autowired
     SendMailHistoryService sendMailHistoryService;
+
+    @ApiOperation("发送邮件")
+    @GetMapping("/sendCaptcha")
+    public Result<?> sendCaptcha(@RequestParam String email) {
+        return sendMailHistoryService.sendCaptcha(email);
+    }
 
     @ApiOperation("发送邮件")
     @PostMapping("/")

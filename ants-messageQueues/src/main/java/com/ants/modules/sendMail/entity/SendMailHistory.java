@@ -1,4 +1,4 @@
-package com.ants.modules.system.entity;
+package com.ants.modules.sendMail.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

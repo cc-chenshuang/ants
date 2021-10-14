@@ -1,10 +1,9 @@
-package com.ants.modules.system.service;
+package com.ants.modules.sendMail.service;
 
-import com.ants.modules.system.entity.SendMailHistory;
-import com.ants.modules.system.vo.SendMailVo;
+import com.ants.common.system.result.Result;
+import com.ants.modules.sendMail.entity.SendMailHistory;
+import com.ants.modules.sendMail.vo.SendMailVo;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.Map;
 
 /**
  * TODO
@@ -15,4 +14,6 @@ import java.util.Map;
 public interface SendMailHistoryService extends IService<SendMailHistory> {
 
     boolean sendMail(SendMailVo sendMailVo);
+
+    Result<?> sendCaptcha(String email);
 }

@@ -1,6 +1,6 @@
-package com.ants.modules.system.service;
+package com.ants.modules.sendMail.service;
 
-import com.ants.modules.system.entity.MailConfig;
+import com.ants.modules.sendMail.entity.MailConfig;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

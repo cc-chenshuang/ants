@@ -42,6 +42,17 @@ spring:
 ##        url: http://127.0.0.1:8769
 #        username: admin    #对应server端的账号密码，不配置就监控不到这个client。
 #        password: admin
+  rabbitmq:
+    host: 39.107.111.110
+    port: 5672
+    username: guest
+    password: guest
+    #virtual-host:
+    # ------- 消息确认配置项 --------
+    # 确认消息已发送到交换机
+    #publisher-confirms: true
+    # 确认消息已发送队列
+    publisher-returns: true
   servlet:
     multipart:
       max-file-size: 10MB

@@ -29,13 +29,17 @@ public class SaTokenConfigure implements WebMvcConfigurer {
         // 排除 URL
         List<String> releaseList = new ArrayList<>();
         releaseList.add("/sys/login");
+        releaseList.add("/sys/register");
         releaseList.add("/actuator/**");
         releaseList.add("/actuator/health");
         releaseList.add("/doc.html");
         releaseList.add("/webjars/**");
         releaseList.add("/swagger-resources/**");
         releaseList.add("/sys/common/static/**");
+        releaseList.add("/sys/common/upload");
         releaseList.add("/articleView/**");
+        releaseList.add("/sys/duplicate/check");
+        releaseList.add("/mail/tool/sendCaptcha");
 
         // 注册路由拦截器，自定义验证规则
         registry.addInterceptor(new SaRouteInterceptor((req, res, handler) -> {
