@@ -1484,7 +1484,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="ants-common" />
-    <orderEntry type="module" module-name="ants-messageQueues" />
+    <orderEntry type="module" module-name="ants-mq" />
     <orderEntry type="module" module-name="ants-article" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter:2.5.2" level="project" />

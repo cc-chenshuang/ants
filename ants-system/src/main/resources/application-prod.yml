@@ -15,6 +15,17 @@ server:
     keepAliveTimeout: 5000
     #最大的 长连接数
     maxKeepAliveRequests: 100
+  rabbitmq:
+    host: 39.107.111.110
+    port: 5672
+    username: guest
+    password: guest
+    #virtual-host:
+    # ------- 消息确认配置项 --------
+    # 确认消息已发送到交换机
+    #publisher-confirms: true
+    # 确认消息已发送队列
+    publisher-returns: true
   servlet:
     #访问路径前缀；如：localhost:8080/ants/**
     context-path: /ants

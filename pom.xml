@@ -15,8 +15,8 @@
 
     <modules>
         <module>ants-system</module>
-        <module>ants-messageQueues</module>
         <module>ants-common</module>
+        <module>ants-mq</module>
         <module>ants-article</module>
     </modules>
 

@@ -171,5 +171,4 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return Result.ok("密码修改成功!");
     }
 
-
 }

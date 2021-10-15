@@ -86,7 +86,7 @@ public class ArticleManageController {
         articleManage.setDelFlag(CommonConstant.DEL_FLAG_0);
         articleManageService.save(articleManage);
         // 推送消息队列
-        rabbitTemplate.convertAndSend("pushBaiDuQueue", "http://wxmin.cn/articleDetails/" + articleManage.getId());
+        rabbitTemplate.convertAndSend("pushBaiDuQueue", "http://www.wxmin.cn/articleDetails/" + articleManage.getId());
         return Result.ok("添加成功！");
     }
 

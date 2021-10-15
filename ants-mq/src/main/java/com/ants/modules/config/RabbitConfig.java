@@ -17,4 +17,8 @@ public class RabbitConfig {
         return new Queue("pushBaiDuQueue");
     }
 
+    @Bean
+    public Queue sendMailQueue() {
+        return new Queue("sendMailQueue");
+    }
 }

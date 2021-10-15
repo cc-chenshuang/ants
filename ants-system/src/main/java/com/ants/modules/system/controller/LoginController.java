@@ -2,6 +2,7 @@ package com.ants.modules.system.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CommonConstant;
@@ -175,20 +176,26 @@ public class LoginController {
 
     @PostMapping("/register")
     public Result<?> register(@RequestBody JSONObject jsonObject) {
-        redisUtil.get("");
-        try {
-            SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
-            user.setCreateTime(new Date());//设置创建时间
-            String salt = oConvertUtils.randomGen(8);
-            user.setSalt(salt);
-            String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
-            user.setPassword(passwordEncode);
-            user.setStatus(1);
-            user.setDelFlag(CommonConstant.DEL_FLAG_0);
-            sysUserService.addUserWithRole(user, "1446724729018728450");
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            return Result.error("操作失败");
+        SysUser user = JSON.parseObject(jsonObject.toJSONString(), SysUser.class);
+        String captchaCode = (String) redisUtil.get("captchaCode:" + user.getEmail());
+        if (StrUtil.isNotBlank(captchaCode)) {
+            String captcha = (String) jsonObject.get("captcha");
+            if (captchaCode.equals(captcha)) {
+                user.setCreateTime(new Date()); //设置创建时间
+                String salt = oConvertUtils.randomGen(8);
+                user.setSalt(salt);
+                String passwordEncode = PasswordUtil.encrypt(user.getUsername(), user.getPassword(), salt);
+                user.setPassword(passwordEncode);
+                user.setStatus(1);
+                user.setDelFlag(CommonConstant.DEL_FLAG_0);
+                user.setCreateBy("用户注册");
+                user.setCreateTime(new Date());
+                sysUserService.addUserWithRole(user, "1446724729018728450");
+            } else {
+                return Result.error("验证码错误！");
+            }
+        } else {
+            return Result.error("验证码已过期，请重新发送！");
         }
         return Result.ok("添加成功！");
     }

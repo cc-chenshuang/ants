@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,31 +30,34 @@ public class MailToolController {
 
     @Autowired
     SendMailHistoryService sendMailHistoryService;
+    @Autowired
+    AmqpTemplate rabbitTemplate;
 
     @ApiOperation("发送邮件")
     @GetMapping("/sendCaptcha")
     public Result<?> sendCaptcha(@RequestParam String email) {
-        return sendMailHistoryService.sendCaptcha(email);
+        rabbitTemplate.convertAndSend("sendMailQueue", email);
+        return Result.ok("验证码发送成功，请登录邮箱查看！");
     }
 
     @ApiOperation("发送邮件")
     @PostMapping("/")
     public Result sendMail(@RequestBody SendMailVo sendMailVo) {
-        boolean b = sendMailHistoryService.sendMail(sendMailVo);
-        if (b){
-            log.info("邮件发送成功！");
+        rabbitTemplate.convertAndSend("sendMailQueue", sendMailVo);
+//        boolean b = sendMailHistoryService.sendMail(sendMailVo);
+//        if (b) {
             return Result.ok("发送成功！");
-        }
-        log.error("邮件发送失败！");
-        return Result.error("发送失败！");
+//        }
+//        log.error("邮件发送失败！");
+//        return Result.error("发送失败！");
     }
 
     @ApiOperation("获取邮件发送记录")
     @GetMapping("/")
     public Result<?> get(SendMailHistory sendMailHistory,
-                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                                   HttpServletRequest req) {
+                         @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                         HttpServletRequest req) {
         QueryWrapper<SendMailHistory> qw = QueryGenerator.initQueryWrapper(sendMailHistory, req.getParameterMap());
         qw.orderByDesc("create_time");
         Page<SendMailHistory> page = new Page<SendMailHistory>(pageNo, pageSize);
@@ -65,7 +69,7 @@ public class MailToolController {
     @DeleteMapping("/{id}")
     public Result<?> delete(@PathVariable("id") String id) {
         boolean b = sendMailHistoryService.removeById(id);
-        if (b){
+        if (b) {
             return Result.ok("删除成功！");
         }
         return Result.error("删除失败！");

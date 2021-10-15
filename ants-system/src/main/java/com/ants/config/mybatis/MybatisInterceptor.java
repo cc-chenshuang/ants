@@ -34,7 +34,6 @@ public class MybatisInterceptor implements Interceptor {
         SqlCommandType sqlCommandType = mappedStatement.getSqlCommandType();
         Object parameter = invocation.getArgs()[1];
         log.debug("------sqlCommandType------" + sqlCommandType);
-        String username = StpUtil.getLoginIdAsString();
         if (parameter == null) {
             return invocation.proceed();
         }
@@ -49,6 +48,7 @@ public class MybatisInterceptor implements Interceptor {
                         Object local_createBy = field.get(parameter);
                         field.setAccessible(false);
                         if (local_createBy == null || local_createBy.equals("")) {
+                            String username = StpUtil.getLoginIdAsString();
                             if (StrUtil.isNotBlank(username)) {
                                 // 登录人账号
                                 field.setAccessible(true);
@@ -110,6 +110,7 @@ public class MybatisInterceptor implements Interceptor {
                 log.debug("------field.name------" + field.getName());
                 try {
                     if ("updateBy".equals(field.getName())) {
+                        String username = StpUtil.getLoginIdAsString();
                         //获取登录用户信息
                         if (StrUtil.isNotBlank(username)) {
                             // 登录账号
