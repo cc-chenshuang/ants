@@ -3,7 +3,7 @@ CREATE TABLE `article_favorites`
 (
     `id`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
     `name`        varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '名称',
-    `describe`    longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '描述',
+    `article_describe`    longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '描述',
     `create_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '创建人',
     `create_time` datetime                                                      DEFAULT NULL COMMENT '创建时间',
     `update_by`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '修改人',
