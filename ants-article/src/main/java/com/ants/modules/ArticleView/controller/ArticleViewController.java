@@ -1,10 +1,7 @@
 package com.ants.modules.ArticleView.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import com.ants.common.annotation.AutoLog;
-import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
@@ -14,19 +11,22 @@ import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.modules.ArticleManage.vo.ArticleManageVo;
+import com.ants.modules.articleFavorites.entity.ArticleFavoritesSub;
+import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +47,8 @@ public class ArticleViewController {
     ArticleLikeCollectionService articleLikeCollectionService;
     @Autowired
     ISysBaseAPI sysBaseAPI;
+    @Autowired
+    ArticleFavoritesSubService articleFavoritesSubService;
 
     /**
      * @return
@@ -128,13 +130,16 @@ public class ArticleViewController {
             LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
             lqw.eq(ArticleLikeCollection::getUsername, username)
                     .eq(ArticleLikeCollection::getArticleId, id);
-            List<ArticleLikeCollection> list1 = articleLikeCollectionService.list(lqw);
-            for (ArticleLikeCollection articleLikeCollection : list1) {
-                if ("1".equals(articleLikeCollection.getType())) {
-                    byId.setIsCollect("1");
-                } else {
-                    byId.setIsLikes("1");
-                }
+            ArticleLikeCollection articleLikeCollection = articleLikeCollectionService.getOne(lqw);
+            if (articleLikeCollection != null) {
+                byId.setIsLikes("1");
+            }
+            LambdaQueryWrapper<ArticleFavoritesSub> lqw2 = new LambdaQueryWrapper<>();
+            lqw2.eq(ArticleFavoritesSub::getCreateBy, username)
+                    .eq(ArticleFavoritesSub::getArticleId, id);
+            ArticleFavoritesSub articleFavoritesSub = articleFavoritesSubService.getOne(lqw2);
+            if (articleFavoritesSub != null) {
+                byId.setIsCollect("1");
             }
         }
         IPage<ArticleManage> page = new Page<>();
@@ -193,8 +198,7 @@ public class ArticleViewController {
     }
 
     /**
-     * 收藏/点赞
-     * 1：收藏；2：点赞
+     * 点赞
      *
      * @param articleLikeCollection
      * @return
@@ -206,56 +210,37 @@ public class ArticleViewController {
         articleLikeCollection.setUsername(username);
         articleLikeCollectionService.save(articleLikeCollection);
         ArticleManage byId = articleManageService.getById(articleLikeCollection.getArticleId());
-        if ("1".equals(articleLikeCollection.getType())) {
-            byId.setCollectNum(byId.getCollectNum() + 1);
-        } else {
-            byId.setLikesNum(byId.getLikesNum() + 1);
-        }
+        byId.setLikesNum(byId.getLikesNum() + 1);
         articleManageService.updateById(byId);
         return Result.ok();
     }
 
     /**
-     * 取消收藏/取消点赞
+     * 取消点赞
      *
-     * @param type
      * @param articleId
      * @return
      */
     @DeleteMapping("/cancelLikeCollection")
     @Transactional(rollbackFor = Exception.class)
-    public Result<?> cancelLikeCollection(@RequestParam String type,
-                                          @RequestParam String articleId) {
+    public Result<?> cancelLikeCollection(@RequestParam String articleId) {
         String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
         LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(ArticleLikeCollection::getType, type)
-                .eq(ArticleLikeCollection::getUsername, username)
+        lqw.eq(ArticleLikeCollection::getUsername, username)
                 .eq(ArticleLikeCollection::getArticleId, articleId);
         articleLikeCollectionService.remove(lqw);
         ArticleManage byId = articleManageService.getById(articleId);
-        if ("1".equals(type)) {
-            byId.setCollectNum(byId.getCollectNum() - 1);
-        } else {
-            byId.setLikesNum(byId.getLikesNum() - 1);
-        }
+        byId.setLikesNum(byId.getLikesNum() - 1);
         articleManageService.updateById(byId);
         return Result.ok();
     }
 
 
-    /**
-     * 收藏夹
-     *
-     * @return
-     */
-    @GetMapping("/myFavorites")
-    @Transactional(rollbackFor = Exception.class)
-    public Result<?> myFavorites() {
-        String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
-
-        List<Map<String, String>> list = articleLikeCollectionService.myFavorites(username);
-
-
-        return Result.ok(list);
+    @GetMapping("/recordViewsNum")
+    public Result recordViewsNum(@RequestParam String id) {
+        ArticleManage articleManage = articleManageService.getById(id);
+        articleManage.setViewsNum(articleManage.getViewsNum() + 1);
+        articleManageService.updateById(articleManage);
+        return Result.ok();
     }
 }

@@ -33,11 +33,6 @@ public class ArticleLikeCollection implements Serializable {
     private String id;
 
     /**
-     * 点赞/收藏   1：收藏；2：点赞
-     */
-    private String type;
-
-    /**
      * 用户名
      */
     private String username;
