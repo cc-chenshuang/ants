@@ -10,6 +10,7 @@ import com.ants.modules.articleFavorites.entity.ArticleFavorites;
 import com.ants.modules.articleFavorites.entity.ArticleFavoritesSub;
 import com.ants.modules.articleFavorites.service.ArticleFavoritesService;
 import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
+import com.ants.modules.articleFavorites.vo.MoveFavoritesVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -22,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * TODO
@@ -124,4 +127,35 @@ public class ArticleFavoritesSubController {
         return Result.error("删除失败");
     }
 
+    /**
+     * 移动至其他收藏夹
+     *
+     * @param moveFavoritesVo
+     * @return
+     */
+    @PostMapping("/moveFavorites")
+    @Transactional
+    public Result<?> moveFavorites(@RequestBody MoveFavoritesVo moveFavoritesVo) {
+        String username = StpUtil.getLoginIdAsString();
+        String selectMainId = moveFavoritesVo.getSelectMainId();
+        String oldMainId = moveFavoritesVo.getOldMainId();
+        List<String> moveSelectKeys = moveFavoritesVo.getMoveSelectKeys();
+        LambdaQueryWrapper<ArticleFavoritesSub> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleFavoritesSub::getMainId, oldMainId)
+                .in(ArticleFavoritesSub::getArticleId, moveSelectKeys)
+                .eq(ArticleFavoritesSub::getCreateBy, username);
+        articleFavoritesSubService.remove(lqw);
+
+        List<ArticleFavoritesSub> list = new ArrayList<>();
+        ArticleFavoritesSub articleFavoritesSub = null;
+        for (String moveSelectKey : moveSelectKeys) {
+            articleFavoritesSub = new ArticleFavoritesSub();
+            articleFavoritesSub.setArticleId(moveSelectKey);
+            articleFavoritesSub.setMainId(selectMainId);
+            list.add(articleFavoritesSub);
+        }
+        articleFavoritesSubService.saveBatch(list);
+
+        return Result.ok();
+    }
 }
