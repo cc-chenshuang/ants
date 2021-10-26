@@ -101,6 +101,8 @@ public class ArticleManageController {
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody ArticleManage articleManage) {
         articleManageService.updateById(articleManage);
+        // 推送消息队列
+        rabbitTemplate.convertAndSend("pushBaiDuQueue", "http://www.wxmin.cn/articleDetails/" + articleManage.getId());
         return Result.ok("编辑成功!");
     }
 
