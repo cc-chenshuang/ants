@@ -6,11 +6,13 @@ import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
 import com.ants.common.system.vo.LoginUser;
+import com.ants.common.utils.ComputeDate;
 import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.modules.ArticleManage.vo.ArticleManageVo;
+import com.ants.modules.ArticleView.vo.PersonalHomeInfoVo;
 import com.ants.modules.articleFavorites.entity.ArticleFavoritesSub;
 import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -23,10 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -242,5 +242,64 @@ public class ArticleViewController {
         articleManage.setViewsNum(articleManage.getViewsNum() + 1);
         articleManageService.updateById(articleManage);
         return Result.ok();
+    }
+
+
+    /**
+     * 个人主页-个人信息+文章信息
+     *
+     * @return
+     */
+    @GetMapping("/getPersonalHomeInfo")
+    public Result<?> getPersonalHomeInfo(@RequestParam String username) {
+
+        LoginUser loginUser = sysBaseAPI.getUserByName(username);
+
+        PersonalHomeInfoVo personalHomeInfoVo = new PersonalHomeInfoVo();
+        personalHomeInfoVo.setUserAvatar(loginUser.getAvatar());
+        personalHomeInfoVo.setUsername(loginUser.getUsername());
+        personalHomeInfoVo.setRealname(loginUser.getRealname());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String createTime = sdf.format(loginUser.getCreateTime());
+        String currentTime = sdf.format(new Date());
+        personalHomeInfoVo.setJoinTime(ComputeDate.remainDateToString(createTime, currentTime));
+        LambdaQueryWrapper<ArticleManage> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleManage::getCreateBy, username);
+        List<ArticleManage> list = articleManageService.list(lqw);
+
+        Integer collectNum = list.stream().collect(Collectors.summingInt(ArticleManage::getCollectNum));
+        Integer viewNum = list.stream().collect(Collectors.summingInt(ArticleManage::getViewsNum));
+        Integer likeNum = list.stream().collect(Collectors.summingInt(ArticleManage::getLikesNum));
+        personalHomeInfoVo.setLikesNum(likeNum);
+        personalHomeInfoVo.setViewsNum(viewNum);
+        personalHomeInfoVo.setCollectNum(collectNum);
+        personalHomeInfoVo.setArticleNum(list.size());
+        return Result.ok(personalHomeInfoVo);
+    }
+
+    /**
+     * 个人主页-获取文章
+     *
+     * @return
+     */
+    @GetMapping("/getPersonalHomelist")
+    public Result<?> getPersonalHomelist(@RequestParam String sortType,
+                                         @RequestParam String username) {
+        LambdaQueryWrapper<ArticleManage> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleManage::getCreateBy, username);
+        if ("1".equals(sortType)) {
+            lqw.orderByDesc(ArticleManage::getCreateTime);
+        } else if ("2".equals(sortType)) {
+            lqw.orderByDesc(ArticleManage::getViewsNum);
+        } else if ("3".equals(sortType)) {
+            lqw.orderByDesc(ArticleManage::getLikesNum);
+        } else {
+            lqw.orderByDesc(ArticleManage::getCollectNum);
+        }
+        List<ArticleManage> list = articleManageService.list(lqw);
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+
+        return Result.ok(page);
     }
 }
