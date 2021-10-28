@@ -35,4 +35,13 @@ CREATE TABLE `article_score`
     `update_time` datetime                                                     DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统评价';
-
+-- chenshuang  增加关注分表    2021-10-28
+CREATE TABLE `article_follow` (
+  `id` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ID',
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '关注用户',
+  `create_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '创建人',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_by` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '修改人',
+  `update_time` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='我的关注表';
