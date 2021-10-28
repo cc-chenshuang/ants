@@ -4,12 +4,18 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CacheConstant;
 import com.ants.common.constant.CommonConstant;
+import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.utils.oConvertUtils;
+import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
 import com.ants.modules.ArticleManage.entity.ArticleManage;
+import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.common.system.result.Result;
 import com.ants.modules.ArticleManage.vo.ArticleManageVo;
+import com.ants.modules.articleFavorites.entity.ArticleFavoritesSub;
+import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +48,11 @@ public class ArticleManageController {
     ArticleManageService articleManageService;
     @Autowired
     private AmqpTemplate rabbitTemplate;
+
+    @Autowired
+    ArticleLikeCollectionService articleLikeCollectionService;
+    @Autowired
+    ArticleFavoritesSubService articleFavoritesSubService;
 
     @AutoLog(value = "文章管理-列表")
     @ApiOperation(value = "文章管理-列表", notes = "文章管理-列表")
@@ -144,8 +156,16 @@ public class ArticleManageController {
      * @功能：彻底删除
      */
     @DeleteMapping("/thoroughDelete")
+    @Transactional(rollbackFor = Exception.class)
     public Result<?> thoroughDelete(@RequestParam(name = "id", required = true) String id) {
         boolean ok = articleManageService.removeById(id);
+        // 同时删除收藏与点赞信息
+        LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLikeCollection::getArticleId, id);
+        articleLikeCollectionService.remove(lqw);
+        LambdaQueryWrapper<ArticleFavoritesSub> lqw2 = new LambdaQueryWrapper<>();
+        lqw2.eq(ArticleFavoritesSub::getArticleId, id);
+        articleFavoritesSubService.remove(lqw2);
         if (ok) {
             return Result.ok("删除成功");
         }
