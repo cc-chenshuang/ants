@@ -12,15 +12,20 @@ import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.ArticleManage.service.ArticleLikeCollectionService;
 import com.ants.modules.ArticleManage.service.ArticleManageService;
 import com.ants.modules.ArticleManage.vo.ArticleManageVo;
+import com.ants.modules.ArticleView.vo.PersonMyFavoritesVo;
 import com.ants.modules.ArticleView.vo.PersonalHomeInfoVo;
 import com.ants.modules.articleFavorites.entity.ArticleFavoritesSub;
 import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
+import com.ants.modules.articleFollow.entity.ArticleFollow;
+import com.ants.modules.articleFollow.service.ArticleFollowService;
+import com.ants.modules.articleFollow.vo.ArticleFollowVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -49,6 +54,8 @@ public class ArticleViewController {
     ISysBaseAPI sysBaseAPI;
     @Autowired
     ArticleFavoritesSubService articleFavoritesSubService;
+    @Autowired
+    ArticleFollowService articleFollowService;
 
     /**
      * @return
@@ -141,6 +148,17 @@ public class ArticleViewController {
             if (articleFavoritesSub != null) {
                 byId.setIsCollect("1");
             }
+            LambdaQueryWrapper<ArticleFollow> lqw3 = new LambdaQueryWrapper<>();
+            lqw3.eq(ArticleFollow::getUsername, byId.getCreateBy())
+                    .eq(ArticleFollow::getCreateBy, username);
+            ArticleFollow articleFollow = articleFollowService.getOne(lqw3);
+            if (articleFollow != null) {
+                byId.setIsFollow(false);
+            } else {
+                byId.setIsFollow(true);
+            }
+        } else {
+            byId.setIsFollow(true);
         }
         IPage<ArticleManage> page = new Page<>();
         list.add(byId);
@@ -300,6 +318,96 @@ public class ArticleViewController {
         IPage<ArticleManage> page = new Page<>();
         page.setRecords(list);
 
+        return Result.ok(page);
+    }
+
+    /**
+     * 个人主页-收藏-展示个人收藏的文章
+     *
+     * @param username
+     * @return
+     */
+    @GetMapping("/getPersonMyFavoritesList")
+    public Result<?> getPersonMyFavoritesList(@RequestParam String username) {
+        LambdaQueryWrapper<ArticleFavoritesSub> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleFavoritesSub::getCreateBy, username);
+        List<ArticleFavoritesSub> list = articleFavoritesSubService.list(lqw);
+        List<PersonMyFavoritesVo> results = new ArrayList<>();
+        PersonMyFavoritesVo personMyFavoritesVo = null;
+        for (ArticleFavoritesSub articleFavoritesSub : list) {
+            personMyFavoritesVo = new PersonMyFavoritesVo();
+            personMyFavoritesVo.setDateTime(articleFavoritesSub.getCreateTime());
+            ArticleManage articleManage = articleManageService.getById(articleFavoritesSub.getArticleId());
+            BeanUtils.copyProperties(articleManage, personMyFavoritesVo);
+            results.add(personMyFavoritesVo);
+        }
+        IPage<PersonMyFavoritesVo> page = new Page<>();
+        page.setRecords(results);
+        return Result.ok(page);
+    }
+
+    /**
+     * 个人主页-点赞-展示个人点赞的文章
+     *
+     * @param username
+     * @return
+     */
+    @GetMapping("/getPersonLikeList")
+    public Result<?> getPersonLikeList(@RequestParam String username) {
+        LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLikeCollection::getUsername, username);
+        List<ArticleLikeCollection> list = articleLikeCollectionService.list(lqw);
+        List<PersonMyFavoritesVo> results = new ArrayList<>();
+        PersonMyFavoritesVo personMyFavoritesVo = null;
+        for (ArticleLikeCollection articleLikeCollection : list) {
+            personMyFavoritesVo = new PersonMyFavoritesVo();
+            personMyFavoritesVo.setDateTime(articleLikeCollection.getCreateTime());
+            ArticleManage articleManage = articleManageService.getById(articleLikeCollection.getArticleId());
+            BeanUtils.copyProperties(articleManage, personMyFavoritesVo);
+            results.add(personMyFavoritesVo);
+        }
+        IPage<PersonMyFavoritesVo> page = new Page<>();
+        page.setRecords(results);
+        return Result.ok(page);
+    }
+
+    /**
+     * 个人主页-关注
+     *
+     * @param username
+     * @return
+     */
+    @GetMapping("/getPersonFollowList")
+    public Result<?> getPersonFollowList(@RequestParam String username) {
+        LambdaQueryWrapper<ArticleFollow> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleFollow::getCreateBy, username);
+        List<ArticleFollow> list = articleFollowService.list(lqw);
+        List<ArticleFollowVo> results = new ArrayList<>();
+        ArticleFollowVo articleFollowVo = null;
+        for (ArticleFollow articleFollow : list) {
+            articleFollowVo = new ArticleFollowVo();
+            LambdaQueryWrapper<ArticleManage> lqw2 = new LambdaQueryWrapper<>();
+            lqw2.eq(ArticleManage::getCreateBy, articleFollow.getUsername());
+            List<ArticleManage> articleManageList = articleManageService.list(lqw2);
+            Integer collectNum = articleManageList.stream().collect(Collectors.summingInt(ArticleManage::getCollectNum));
+            Integer viewNum = articleManageList.stream().collect(Collectors.summingInt(ArticleManage::getViewsNum));
+            Integer likeNum = articleManageList.stream().collect(Collectors.summingInt(ArticleManage::getLikesNum));
+            LoginUser loginUser = sysBaseAPI.getUserByName(articleFollow.getUsername());
+            articleFollowVo.setUsername(articleFollow.getUsername());
+            articleFollowVo.setUserAvatar(loginUser.getAvatar());
+            articleFollowVo.setCollectNum(collectNum);
+            articleFollowVo.setViewsNum(viewNum);
+            articleFollowVo.setLikesNum(likeNum);
+            articleFollowVo.setArticleNum(articleManageList.size());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String createTime = sdf.format(loginUser.getCreateTime());
+            String currentTime = sdf.format(new Date());
+            articleFollowVo.setJoinTime(ComputeDate.remainDateToString(createTime, currentTime));
+
+            results.add(articleFollowVo);
+        }
+        IPage<ArticleFollowVo> page = new Page<>();
+        page.setRecords(results);
         return Result.ok(page);
     }
 }

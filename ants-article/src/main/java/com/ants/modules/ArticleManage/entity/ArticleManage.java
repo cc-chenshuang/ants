@@ -164,4 +164,9 @@ public class ArticleManage implements Serializable {
      */
     @TableField(exist = false)
     private String userAvatar;
+    /**
+     * 是否关注
+     */
+    @TableField(exist = false)
+    private Boolean isFollow;
 }
