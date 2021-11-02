@@ -2,6 +2,8 @@ package com.ants.modules.receiver;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ants.modules.PushBaidu.entity.PushBaidu;
+import com.ants.modules.PushBaidu.service.PushBaiduService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -20,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -32,12 +35,19 @@ import java.util.Map;
 @Slf4j
 public class PushBaiDuReceiver {
 
+    @Autowired
+    PushBaiduService pushBaiduService;
+
     @RabbitHandler
     public void process(String url) {
         String PostUrl = "http://data.zz.baidu.com/urls?site=www.wxmin.cn&token=WaSUZJVLgyKxfZIU";
         String result = "";
         PrintWriter out = null;
         BufferedReader in = null;
+        PushBaidu pushBaidu = new PushBaidu();
+        pushBaidu.setPushTime(new Date());
+        pushBaidu.setParam(url);
+        pushBaidu.setState("成功");
         try {
             //建立URL之间的连接
             URLConnection conn = new URL(PostUrl).openConnection();
@@ -66,8 +76,9 @@ public class PushBaiDuReceiver {
             }
             //}
         } catch (Exception e) {
-            System.out.println("post推送出现异常！" + e);
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
+            pushBaidu.setState("失败");
+            pushBaidu.setErrMsg(e.getMessage());
         } finally {
             try {
                 if (out != null) {
@@ -80,6 +91,7 @@ public class PushBaiDuReceiver {
                 ex.printStackTrace();
             }
         }
+        pushBaiduService.save(pushBaidu);
         log.info(result);
     }
 }

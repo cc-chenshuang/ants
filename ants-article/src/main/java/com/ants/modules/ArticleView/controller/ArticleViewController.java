@@ -284,7 +284,7 @@ public class ArticleViewController {
         LambdaQueryWrapper<ArticleManage> lqw = new LambdaQueryWrapper<>();
         lqw.eq(ArticleManage::getCreateBy, username);
         List<ArticleManage> list = articleManageService.list(lqw);
-
+        personalHomeInfoVo.setCreateTime(loginUser.getCreateTime());
         Integer collectNum = list.stream().collect(Collectors.summingInt(ArticleManage::getCollectNum));
         Integer viewNum = list.stream().collect(Collectors.summingInt(ArticleManage::getViewsNum));
         Integer likeNum = list.stream().collect(Collectors.summingInt(ArticleManage::getLikesNum));

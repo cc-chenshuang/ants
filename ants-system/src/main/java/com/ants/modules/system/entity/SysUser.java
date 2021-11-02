@@ -104,6 +104,8 @@ public class SysUser implements Serializable {
     /**
      * 创建时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     /**
@@ -114,5 +116,49 @@ public class SysUser implements Serializable {
     /**
      * 更新时间
      */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date updateTime;
+
+    /**
+     * 工作时间
+     */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date workingHours;
+
+    /**
+     * 个人简介/个人描述
+     */
+    private String personDescribe;
+
+    /**
+     * 学校名称
+     */
+    private String schoolName;
+
+    /**
+     * 专业
+     */
+    private String major;
+
+    /**
+     * 入学时间
+     */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date schoolStartTime;
+
+    /**
+     * 毕业时间
+     */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date schoolEndTime;
+
+    /**
+     * 学历
+     */
+    @Dict(dicCode = "education")
+    private String education;
 }

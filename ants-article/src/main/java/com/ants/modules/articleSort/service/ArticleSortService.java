@@ -1,6 +1,5 @@
 package com.ants.modules.articleSort.service;
 
-import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.articleSort.entity.ArticleSort;
 import com.baomidou.mybatisplus.extension.service.IService;
 

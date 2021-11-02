@@ -1,12 +1,15 @@
 package com.ants.modules.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.common.utils.ComputeDate;
 import com.ants.common.utils.PasswordUtil;
 import com.ants.common.utils.oConvertUtils;
+import com.ants.modules.ArticleManage.entity.ArticleManage;
 import com.ants.modules.system.entity.SysUser;
 import com.ants.modules.system.entity.SysUserRole;
 import com.ants.modules.system.service.ISysUserRoleService;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -290,4 +294,35 @@ public class SysUserController {
         }
         return result;
     }
+
+    /**
+     * 获取当前登录用户
+     */
+    @GetMapping("/getCurrentLoginUser")
+    public Result<?> getCurrentLoginUser() {
+        String username = StpUtil.getLoginIdAsString();
+        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        SysUser one = sysUserService.getOne(queryWrapper);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String createTime = sdf.format(one.getCreateTime());
+        String currentTime = sdf.format(new Date());
+        List<SysUser> list = new ArrayList<>();
+        list.add(one);
+        IPage<SysUser> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
+    }
+
+    @RequestMapping(value = "/editUserInfo", method = RequestMethod.PUT)
+    public Result<?> editUserInfo(@RequestBody SysUser sysUser) {
+        try {
+            sysUserService.updateById(sysUser);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return Result.error("操作失败");
+        }
+        return Result.ok("修改成功!");
+    }
+
 }

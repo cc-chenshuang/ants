@@ -1,7 +1,11 @@
 package com.ants.modules.ArticleView.vo;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * TODO
@@ -47,4 +51,11 @@ public class PersonalHomeInfoVo {
      * 文章数
      */
     private Integer articleNum;
+
+    /**
+     * 创建时间
+     */
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date createTime;
 }
