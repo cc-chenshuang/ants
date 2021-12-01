@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import org.jeecgframework.poi.excel.annotation.Excel;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -26,10 +25,8 @@ public class SysCategory implements Serializable,Comparable<SysCategory>{
 	/**父级节点*/
 	private String pid;
 	/**类型名称*/
-	@Excel(name = "类型名称", width = 15)
 	private String name;
 	/**类型编码*/
-	@Excel(name = "类型编码", width = 15)
 	private String code;
 	/**创建人*/
 	private String createBy;
@@ -46,7 +43,6 @@ public class SysCategory implements Serializable,Comparable<SysCategory>{
 	/**所属部门*/
 	private String sysOrgCode;
 	/**是否有子节点*/
-	@Excel(name = "是否有子节点(1:有)", width = 15)
 	private String hasChild;
 
 	@Override

@@ -37,7 +37,7 @@ import java.util.List;
  */
 
 @Slf4j
-@Api(tags = "文章管理")
+@Api(tags = "标签管理")
 @RestController
 @RequestMapping("/articleLable")
 public class ArticleLableController {
@@ -45,14 +45,16 @@ public class ArticleLableController {
     @Autowired
     ArticleLableService articleLableService;
 
-    @AutoLog(value = "文章管理-列表")
-    @ApiOperation(value = "文章管理-列表", notes = "文章管理-列表")
+    @AutoLog(value = "标签管理-列表")
+    @ApiOperation(value = "标签管理-列表", notes = "标签管理-列表")
     @GetMapping("/list")
     public Result<?> queryPageList(ArticleLable articleLable,
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
+        String username = StpUtil.getLoginIdAsString();
         QueryWrapper<ArticleLable> queryWrapper = QueryGenerator.initQueryWrapper(articleLable, req.getParameterMap());
+        queryWrapper.eq("create_by", username);
         queryWrapper.orderByAsc("sort_no");
         Page<ArticleLable> page = new Page<ArticleLable>(pageNo, pageSize);
         IPage<ArticleLable> pageList = articleLableService.page(page, queryWrapper);
@@ -65,8 +67,8 @@ public class ArticleLableController {
      * @param articleLable
      * @return
      */
-    @AutoLog(value = "文章管理-添加")
-    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @AutoLog(value = "标签管理-添加")
+    @ApiOperation(value = "标签管理-添加", notes = "标签管理-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody ArticleLable articleLable) {
         if (articleLable.getSortNo() == null) {
@@ -79,13 +81,20 @@ public class ArticleLableController {
         return Result.ok("添加成功！");
     }
 
-    @AutoLog(value = "文章管理-添加")
-    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @AutoLog(value = "标签管理-添加")
+    @ApiOperation(value = "标签管理-添加", notes = "标签管理-添加")
     @PostMapping(value = "/addLable")
     public Result<?> addLable(@RequestBody ArticleLable articleLable) {
-        QueryWrapper<ArticleLable> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("max(sort_no) sortNo");
-        ArticleLable one = articleLableService.getOne(queryWrapper);
+        String username = StpUtil.getLoginIdAsString();
+        LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLable::getName, articleLable.getName()).eq(ArticleLable::getCreateBy, username);
+        ArticleLable entity = articleLableService.getOne(lqw);
+        if (entity != null) {
+            return Result.error("标签已存在，不可继续添加！");
+        }
+        QueryWrapper<ArticleLable> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.select("max(sort_no) sortNo");
+        ArticleLable one = articleLableService.getOne(queryWrapper2);
         articleLable.setSortNo(one.getSortNo() + 1);
         articleLableService.save(articleLable);
         ArticleLableVo articleLableVo = new ArticleLableVo();
@@ -100,8 +109,8 @@ public class ArticleLableController {
      * @param articleLable
      * @return
      */
-    @AutoLog(value = "文章管理-编辑")
-    @ApiOperation(value = "文章管理-编辑", notes = "文章管理-编辑")
+    @AutoLog(value = "标签管理-编辑")
+    @ApiOperation(value = "标签管理-编辑", notes = "标签管理-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody ArticleLable articleLable) {
         articleLableService.updateById(articleLable);
@@ -138,7 +147,9 @@ public class ArticleLableController {
 
     @GetMapping("/genArticleLableList")
     public Result<?> genArticleLableList(@RequestParam(required = false) String name) {
+        String username = StpUtil.getLoginIdAsString();
         LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLable::getCreateBy, username);
         if (StrUtil.isNotBlank(name)) {
             lqw.like(ArticleLable::getName, name);
         }

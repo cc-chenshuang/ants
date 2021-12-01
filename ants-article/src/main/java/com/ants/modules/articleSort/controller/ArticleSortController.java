@@ -1,5 +1,6 @@
 package com.ants.modules.articleSort.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.system.query.QueryGenerator;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 
 @Slf4j
-@Api(tags = "文章管理")
+@Api(tags = "分类管理")
 @RestController
 @RequestMapping("/articleSort")
 public class ArticleSortController {
@@ -39,14 +40,16 @@ public class ArticleSortController {
     @Autowired
     ArticleSortService articleSortService;
 
-    @AutoLog(value = "文章管理-列表")
-    @ApiOperation(value = "文章管理-列表", notes = "文章管理-列表")
+    @AutoLog(value = "分类管理-列表")
+    @ApiOperation(value = "分类管理-列表", notes = "分类管理-列表")
     @GetMapping("/list")
     public Result<?> queryPageList(ArticleSort articleSort,
                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                                    HttpServletRequest req) {
+        String username = StpUtil.getLoginIdAsString();
         QueryWrapper<ArticleSort> queryWrapper = QueryGenerator.initQueryWrapper(articleSort, req.getParameterMap());
+        queryWrapper.eq("create_by", username);
         queryWrapper.orderByAsc("sort_no");
         Page<ArticleSort> page = new Page<ArticleSort>(pageNo, pageSize);
         IPage<ArticleSort> pageList = articleSortService.page(page, queryWrapper);
@@ -59,21 +62,28 @@ public class ArticleSortController {
      * @param articleSort
      * @return
      */
-    @AutoLog(value = "文章管理-添加")
-    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @AutoLog(value = "分类管理-添加")
+    @ApiOperation(value = "分类管理-添加", notes = "分类管理-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody ArticleSort articleSort) {
         articleSortService.save(articleSort);
         return Result.ok("添加成功！");
     }
 
-    @AutoLog(value = "文章管理-添加")
-    @ApiOperation(value = "文章管理-添加", notes = "文章管理-添加")
+    @AutoLog(value = "分类管理-添加")
+    @ApiOperation(value = "分类管理-添加", notes = "分类管理-添加")
     @PostMapping(value = "/addSort")
     public Result<?> addSort(@RequestBody ArticleSort articleSort) {
-        QueryWrapper<ArticleSort> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("max(sort_no) sortNo");
-        ArticleSort one = articleSortService.getOne(queryWrapper);
+        String username = StpUtil.getLoginIdAsString();
+        LambdaQueryWrapper<ArticleSort> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleSort::getName, articleSort.getName()).eq(ArticleSort::getCreateBy, username);
+        ArticleSort entity = articleSortService.getOne(lqw);
+        if (entity != null) {
+            return Result.error("分类已存在，不可继续添加！");
+        }
+        QueryWrapper<ArticleSort> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.select("max(sort_no) sortNo");
+        ArticleSort one = articleSortService.getOne(queryWrapper2);
         articleSort.setSortNo(one.getSortNo() + 1);
         articleSortService.save(articleSort);
         ArticleSortVo articleSortVo = new ArticleSortVo();
@@ -88,8 +98,8 @@ public class ArticleSortController {
      * @param articleSort
      * @return
      */
-    @AutoLog(value = "文章管理-编辑")
-    @ApiOperation(value = "文章管理-编辑", notes = "文章管理-编辑")
+    @AutoLog(value = "分类管理-编辑")
+    @ApiOperation(value = "分类管理-编辑", notes = "分类管理-编辑")
     @PutMapping(value = "/edit")
     public Result<?> edit(@RequestBody ArticleSort articleSort) {
         articleSortService.updateById(articleSort);
@@ -126,7 +136,9 @@ public class ArticleSortController {
 
     @GetMapping("/genArticSortList")
     public Result<?> genArticSortList(@RequestParam(required = false) String name) {
+        String username = StpUtil.getLoginIdAsString();
         LambdaQueryWrapper<ArticleSort> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleSort::getCreateBy, username);
         if (StrUtil.isNotBlank(name)) {
             lqw.like(ArticleSort::getName, name);
         }
