@@ -1,4 +1,4 @@
-<div align="center"> <a href="https://github.com/huzhushan/vue3-element-admin"> <img alt="VEA Logo" width="160" src="src//assets//images//logo.png"> </a> <br> <br>
+<div align="center">  <img alt="VEA Logo" width="160" src="ants-system/src/main/resources/logo.png">  <br> <br>
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](LICENSE)
 
