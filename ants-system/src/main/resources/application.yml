@@ -3,6 +3,7 @@ spring:
 #    active: dev
     active: prod
 
+
 logging:
   config: classpath:logback-spring.xml
   level:
