@@ -12,7 +12,7 @@
 
 分为**博客展示**与**后台管理**
 
-**前端代码：**[**vue-element-admin**](https://gitee.com/hanshaung/ants-vue) ants-blog分支
+[**前端代码**](https://gitee.com/hanshaung/ants-vue) ants-blog分支
 
 ## 技术栈
 
