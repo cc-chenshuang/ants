@@ -43,7 +43,7 @@
 
 ```bash
 # 克隆项目
-git clone -b ants-blog https://gitee.com/hanshaung/ants.git
+git clone -b ants-blog-admin https://gitee.com/hanshaung/ants.git
 
 ```
 
