@@ -36,7 +36,7 @@ public class AntsFileServiceImpl extends ServiceImpl<AntsFileMapper, AntsFile> i
         try {
             String ctxPath = uploadpath;
             String fileName = null;
-            File file = new File(ctxPath + File.separator + File.separator);
+            File file = new File(ctxPath + File.separator + bizPath + File.separator);
             if (!file.exists()) {
                 file.mkdirs();// 创建文件根目录
             }
@@ -59,7 +59,7 @@ public class AntsFileServiceImpl extends ServiceImpl<AntsFileMapper, AntsFile> i
             if (dbpath.contains("\\")) {
                 dbpath = dbpath.replace("\\", "/");
             }
-            saveFile(fileName, orgName, savePath);
+            saveFile(bizPath + File.separator + fileName, orgName, savePath);
             return dbpath;
         } catch (IOException e) {
             log.error(e.getMessage(), e);

@@ -37,7 +37,8 @@ import java.io.*;
 public class AntsFileController {
 
     @Value(value = "${ants.path.upload}")
-    private String uploadpath;    @Value(value = "${ants.uploadType}")
+    private String uploadpath;
+    @Value(value = "${ants.uploadType}")
     private String uploadType;
     @Value(value = "${ants.minio.bucketName}")
     private String bucketName;
@@ -48,9 +49,9 @@ public class AntsFileController {
     @ApiOperation("获取文件列表")
     @GetMapping("/list")
     public Result list(AntsFile antsFile,
-                         @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
-                         @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
-                         HttpServletRequest req) {
+                       @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                       @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                       HttpServletRequest req) {
         QueryWrapper<AntsFile> qw = QueryGenerator.initQueryWrapper(antsFile, req.getParameterMap());
         qw.orderByDesc("create_time");
         Page<AntsFile> page = new Page<AntsFile>(pageNo, pageSize);
@@ -63,8 +64,31 @@ public class AntsFileController {
     @DeleteMapping("/delete")
     public Result delete(@RequestParam String id) {
         AntsFile antsFile = fileService.getById(id);
-        boolean b = fileService.updateById(antsFile);
-        return Result.ok(b);
+        boolean flag = deleteFile(antsFile.getUrl());
+        if (flag) {
+            boolean ok = fileService.removeById(id);
+            if (ok) {
+                return Result.ok("操作成功！");
+            }
+        }
+        return Result.error("操作失败！");
+    }
+
+    /**
+     * 删除单个文件
+     *
+     * @param sPath 被删除文件的文件名
+     * @return 单个文件删除成功返回true，否则返回false
+     */
+    public boolean deleteFile(String sPath) {
+        boolean flag = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.isFile() && file.exists()) {
+            file.delete();
+            flag = true;
+        }
+        return flag;
     }
 
     /**
