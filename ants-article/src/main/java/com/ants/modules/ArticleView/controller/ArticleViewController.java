@@ -19,6 +19,10 @@ import com.ants.modules.articleFavorites.service.ArticleFavoritesSubService;
 import com.ants.modules.articleFollow.entity.ArticleFollow;
 import com.ants.modules.articleFollow.service.ArticleFollowService;
 import com.ants.modules.articleFollow.vo.ArticleFollowVo;
+import com.ants.modules.articleLable.entity.ArticleLable;
+import com.ants.modules.articleLable.service.ArticleLableService;
+import com.ants.modules.articleSort.entity.ArticleSort;
+import com.ants.modules.articleSort.service.ArticleSortService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -56,6 +60,10 @@ public class ArticleViewController {
     ArticleFavoritesSubService articleFavoritesSubService;
     @Autowired
     ArticleFollowService articleFollowService;
+    @Autowired
+    ArticleSortService articleSortService;
+    @Autowired
+    ArticleLableService articleLableService;
 
     /**
      * @return
@@ -63,8 +71,9 @@ public class ArticleViewController {
      */
     @GetMapping("/initArticleSort")
     public Result<?> initArticleSort() {
-        List<ArticleManageVo> articleManageVoList = articleManageService.initArticleSort();
-        return Result.ok(articleManageVoList);
+//        List<ArticleManageVo> list = articleManageService.initArticleSort();
+        List<ArticleSort> list = articleSortService.list();
+        return Result.ok(list);
     }
 
     /**
@@ -73,8 +82,9 @@ public class ArticleViewController {
      */
     @GetMapping("/initArticleLable")
     public Result<?> initArticleLable() {
-        List<ArticleManageVo> articleManageVoList = articleManageService.initArticleLable();
-        return Result.ok(articleManageVoList);
+//        List<ArticleManageVo> list = articleManageService.initArticleLable();
+        List<ArticleLable> list = articleLableService.list();
+        return Result.ok(list);
     }
 
     /**
