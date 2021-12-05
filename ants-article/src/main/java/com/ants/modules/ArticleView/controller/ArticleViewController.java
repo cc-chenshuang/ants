@@ -420,4 +420,52 @@ public class ArticleViewController {
         page.setRecords(results);
         return Result.ok(page);
     }
+
+
+    /**
+     * @return
+     * @功能：根据分类统计
+     */
+    @GetMapping("/getArticleBySortId")
+    public Result<?> getArticleBySortId(@RequestParam String id) {
+        QueryWrapper<ArticleManage> qw = new QueryWrapper();
+        QueryGenerator.assM2MQueryWrapper(qw, "article_sort", id);
+        qw.orderByDesc("create_time");
+        List<ArticleManage> list = articleManageService.list(qw);
+        return Result.ok(list);
+    }
+
+    /**
+     * @return
+     * @功能：根据分类统计
+     */
+    @GetMapping("/getArticleByLableId")
+    public Result<?> getArticleByLableId(@RequestParam String id) {
+        QueryWrapper<ArticleManage> qw = new QueryWrapper();
+        QueryGenerator.assM2MQueryWrapper(qw, "article_lable", id);
+        qw.orderByDesc("create_time");
+        List<ArticleManage> list = articleManageService.list(qw);
+        return Result.ok(list);
+    }
+
+
+    /**
+     * @return
+     * @功能：根据分类统计
+     */
+    @GetMapping("/getArticleSortById")
+    public Result<?> getArticleSortById(@RequestParam String id) {
+        ArticleSort entity = articleSortService.getById(id);
+        return Result.ok(entity);
+    }
+
+    /**
+     * @return
+     * @功能：根据分类统计
+     */
+    @GetMapping("/getArticleLableById")
+    public Result<?> getArticleLableById(@RequestParam String id) {
+        ArticleLable entity = articleLableService.getById(id);
+        return Result.ok(entity);
+    }
 }
