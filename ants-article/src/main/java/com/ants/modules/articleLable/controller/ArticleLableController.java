@@ -150,10 +150,9 @@ public class ArticleLableController {
         String username = StpUtil.getLoginIdAsString();
         LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
         lqw.eq(ArticleLable::getCreateBy, username);
-        if (StrUtil.isNotBlank(name)) {
-            lqw.like(ArticleLable::getName, name);
-        }
+
         lqw.orderByAsc(ArticleLable::getSortNo);
+
         List<ArticleLable> list = articleLableService.list(lqw);
 
         List<ArticleLableVo> articleLableVoList = new ArrayList<>();
@@ -167,7 +166,26 @@ public class ArticleLableController {
         return Result.ok(articleLableVoList);
     }
 
+    @GetMapping("/getLableAll")
+    public Result<?> getLableAll() {
+        String username = StpUtil.getLoginIdAsString();
+        LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        lqw.ne(ArticleLable::getCreateBy, username);
 
+        lqw.orderByAsc(ArticleLable::getSortNo);
+
+        List<ArticleLable> list = articleLableService.list(lqw);
+
+        List<ArticleLableVo> articleLableVoList = new ArrayList<>();
+        ArticleLableVo articleLableVo = null;
+        for (ArticleLable articleLable : list) {
+            articleLableVo = new ArticleLableVo();
+            articleLableVo.setKey(articleLable.getId());
+            articleLableVo.setLabel(articleLable.getName());
+            articleLableVoList.add(articleLableVo);
+        }
+        return Result.ok(articleLableVoList);
+    }
     @GetMapping("/getLableById")
     public Result<?> getLableById(@RequestParam String ids) {
         LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();

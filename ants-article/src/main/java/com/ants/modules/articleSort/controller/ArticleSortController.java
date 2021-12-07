@@ -136,12 +136,7 @@ public class ArticleSortController {
 
     @GetMapping("/genArticSortList")
     public Result<?> genArticSortList(@RequestParam(required = false) String name) {
-        String username = StpUtil.getLoginIdAsString();
         LambdaQueryWrapper<ArticleSort> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(ArticleSort::getCreateBy, username);
-        if (StrUtil.isNotBlank(name)) {
-            lqw.like(ArticleSort::getName, name);
-        }
         lqw.orderByAsc(ArticleSort::getSortNo);
         List<ArticleSort> list = articleSortService.list(lqw);
 

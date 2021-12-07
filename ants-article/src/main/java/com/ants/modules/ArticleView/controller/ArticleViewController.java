@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
+import com.ants.common.system.vo.DictModel;
 import com.ants.common.system.vo.LoginUser;
 import com.ants.common.utils.ComputeDate;
 import com.ants.modules.ArticleManage.entity.ArticleLikeCollection;
@@ -86,6 +87,15 @@ public class ArticleViewController {
         List<ArticleLable> list = articleLableService.list();
         return Result.ok(list);
     }
+    /**
+     * @return
+     * @功能：根据分类统计
+     */
+    @GetMapping("/getLableStatistics")
+    public Result<?> getLableStatistics() {
+        List<ArticleManageVo> list = articleManageService.initArticleLable();
+        return Result.ok(list);
+    }
 
     /**
      * @param type 1：最新        根据创建时间排序
@@ -95,41 +105,27 @@ public class ArticleViewController {
      */
     @GetMapping("/getArticleList")
     public Result<?> getArticleList(@RequestParam String type,
-                                    @RequestParam String sortId,
-                                    @RequestParam String lableId) {
-        List<ArticleManage> list = null;
+                                    @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                    @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
         QueryWrapper<ArticleManage> qw = new QueryWrapper<>();
-
+        Page<ArticleManage> page = new Page<ArticleManage>(pageNo, pageSize);
+        IPage<ArticleManage> pageList = new Page<>();
         if ("1".equals(type)) {
             qw.clear();
             qw.eq("del_flag", 0);
-            if (StrUtil.isNotBlank(sortId)) {
-                QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
-            }
-            if (StrUtil.isNotBlank(lableId)) {
-                QueryGenerator.assM2MQueryWrapper(qw, "article_lable", lableId);
-            }
             qw.orderByDesc("create_time");
-            list = articleManageService.list(qw);
+            pageList = articleManageService.page(page, qw);
         } else {
             qw.clear();
             qw.eq("del_flag", 0);
-            if (StrUtil.isNotBlank(sortId)) {
-                QueryGenerator.assM2MQueryWrapper(qw, "article_sort", sortId);
-            }
-            if (StrUtil.isNotBlank(lableId)) {
-                QueryGenerator.assM2MQueryWrapper(qw, "article_lable", lableId);
-            }
             qw.orderByDesc("views_num").orderByDesc("likes_num");
-            list = articleManageService.list(qw);
+            pageList = articleManageService.page(page, qw);
         }
-        for (ArticleManage articleManage : list) {
+        for (ArticleManage articleManage : pageList.getRecords()) {
             LoginUser loginUser = sysBaseAPI.getUserByName(articleManage.getCreateBy());
             articleManage.setUserAvatar(loginUser.getAvatar());
         }
-        IPage<ArticleManage> page = new Page<>();
-        page.setRecords(list);
-        return Result.ok(page);
+        return Result.ok(pageList);
     }
 
     /**
@@ -424,7 +420,7 @@ public class ArticleViewController {
 
     /**
      * @return
-     * @功能：根据分类统计
+     * @功能：根据分类查找文章
      */
     @GetMapping("/getArticleBySortId")
     public Result<?> getArticleBySortId(@RequestParam String id) {
@@ -432,12 +428,14 @@ public class ArticleViewController {
         QueryGenerator.assM2MQueryWrapper(qw, "article_sort", id);
         qw.orderByDesc("create_time");
         List<ArticleManage> list = articleManageService.list(qw);
-        return Result.ok(list);
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
     }
 
     /**
      * @return
-     * @功能：根据分类统计
+     * @功能：根据标签查找文章
      */
     @GetMapping("/getArticleByLableId")
     public Result<?> getArticleByLableId(@RequestParam String id) {
@@ -445,13 +443,15 @@ public class ArticleViewController {
         QueryGenerator.assM2MQueryWrapper(qw, "article_lable", id);
         qw.orderByDesc("create_time");
         List<ArticleManage> list = articleManageService.list(qw);
-        return Result.ok(list);
+        IPage<ArticleManage> page = new Page<>();
+        page.setRecords(list);
+        return Result.ok(page);
     }
 
 
     /**
      * @return
-     * @功能：根据分类统计
+     * @功能：根据id查找分类
      */
     @GetMapping("/getArticleSortById")
     public Result<?> getArticleSortById(@RequestParam String id) {
@@ -461,11 +461,45 @@ public class ArticleViewController {
 
     /**
      * @return
-     * @功能：根据分类统计
+     * @功能：根据id查找标签
      */
     @GetMapping("/getArticleLableById")
     public Result<?> getArticleLableById(@RequestParam String id) {
         ArticleLable entity = articleLableService.getById(id);
         return Result.ok(entity);
+    }
+
+    /**
+     * @return
+     * @功能：获取壁纸
+     */
+    @GetMapping("/getMeiTu")
+    public Result<?> getMeiTu(@RequestParam String id) {
+        ArticleLable entity = articleLableService.getById(id);
+        return Result.ok(entity);
+    }
+
+    /**
+     * @return
+     * @功能：获取壁纸分类字典
+     */
+    @GetMapping("/getWallpaperType")
+    public Result<?> getWallpaperType() {
+        List<DictModel> wallpaperType = sysBaseAPI.queryDictItemsByCode("wallpaper_type");
+        return Result.ok(wallpaperType);
+    }
+
+
+    /**
+     * @return
+     * @功能：获取阅读量最多的前三篇文章
+     */
+    @GetMapping("/getArticleLimit3ByView")
+    public Result<?> getArticleLimit3ByView() {
+        LambdaQueryWrapper<ArticleManage> lqw = new LambdaQueryWrapper<>();
+        lqw.orderByDesc(ArticleManage::getViewsNum);
+        lqw.last("limit 3");
+        List<ArticleManage> list = articleManageService.list(lqw);
+        return Result.ok(list);
     }
 }

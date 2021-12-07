@@ -1,14 +1,15 @@
 package com.ants.modules.system.entity;
 
 import com.ants.common.annotation.Dict;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -19,11 +20,11 @@ import java.util.Date;
  * Date   2021/2/2 9:59
  */
 @Data
-@TableName("ants_file")
+@TableName("wallpaper")
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "file对象", description = "统一文件表")
-public class AntsFile {
+@ApiModel(value = "wallpaper对象", description = "壁纸")
+public class Wallpaper {
     /**
      * 主键ID
      */
@@ -41,16 +42,6 @@ public class AntsFile {
     @ApiModelProperty(value = "文件分类")
     @Dict(dicCode = "wallpaper_type")
     private String fileType;
-    /**
-     * 原始文件名称
-     */
-    @ApiModelProperty(value = "原始文件名称")
-    private String oldFileName;
-    /**
-     * 文件路径
-     */
-    @ApiModelProperty(value = "文件路径")
-    private String url;
 
     /**
      * 创建人
