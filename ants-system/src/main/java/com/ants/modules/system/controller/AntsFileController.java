@@ -1,12 +1,16 @@
 package com.ants.modules.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.date.DateUtil;
 import com.ants.common.annotation.AutoLog;
 import com.ants.common.constant.CommonConstant;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
 import com.ants.common.utils.oConvertUtils;
 import com.ants.modules.system.entity.AntsFile;
+import com.ants.modules.system.entity.Wallpaper;
 import com.ants.modules.system.service.AntsFileService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -52,7 +56,9 @@ public class AntsFileController {
                        @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
                        @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
                        HttpServletRequest req) {
+        String username = StpUtil.getLoginIdAsString();
         QueryWrapper<AntsFile> qw = QueryGenerator.initQueryWrapper(antsFile, req.getParameterMap());
+        qw.eq("create_by", username);
         qw.orderByDesc("create_time");
         Page<AntsFile> page = new Page<AntsFile>(pageNo, pageSize);
         IPage<AntsFile> pageList = fileService.page(page, qw);
@@ -100,6 +106,17 @@ public class AntsFileController {
     @PostMapping("/upload")
     public Result<?> upload(HttpServletRequest request) {
         Result<?> result = new Result<>();
+        String username = StpUtil.getLoginIdAsString();
+        String today = DateUtil.today();
+        String startTime = today + " 00:00:00";
+        String endTime = today + " 23:59:59";
+        LambdaQueryWrapper<AntsFile> lqw = new LambdaQueryWrapper<>();
+        lqw.between(AntsFile::getCreateTime, startTime, endTime);
+        lqw.eq(AntsFile::getCreateBy, username);
+        int count = fileService.count(lqw);
+        if (count >= 50) {
+            return Result.error("一天内最多上传50张图片！");
+        }
         String savePath = "";
         String bizPath = request.getParameter("biz");
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;

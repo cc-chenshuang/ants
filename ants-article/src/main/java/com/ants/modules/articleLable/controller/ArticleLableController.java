@@ -71,6 +71,13 @@ public class ArticleLableController {
     @ApiOperation(value = "标签管理-添加", notes = "标签管理-添加")
     @PostMapping(value = "/add")
     public Result<?> add(@RequestBody ArticleLable articleLable) {
+        String username = StpUtil.getLoginIdAsString();
+        LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleLable::getCreateBy, username);
+        List<ArticleLable> list = articleLableService.list(lqw);
+        if (list.size() >= 5) {
+            return Result.error("每个人只能自定义5个标签！");
+        }
         if (articleLable.getSortNo() == null) {
             QueryWrapper<ArticleLable> queryWrapper = new QueryWrapper<>();
             queryWrapper.select("max(sort_no) sortNo");
@@ -186,6 +193,7 @@ public class ArticleLableController {
         }
         return Result.ok(articleLableVoList);
     }
+
     @GetMapping("/getLableById")
     public Result<?> getLableById(@RequestParam String ids) {
         LambdaQueryWrapper<ArticleLable> lqw = new LambdaQueryWrapper<>();

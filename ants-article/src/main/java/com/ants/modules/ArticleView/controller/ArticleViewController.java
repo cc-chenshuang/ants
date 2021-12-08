@@ -1,7 +1,6 @@
 package com.ants.modules.ArticleView.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.util.StrUtil;
 import com.ants.common.system.api.ISysBaseAPI;
 import com.ants.common.system.query.QueryGenerator;
 import com.ants.common.system.result.Result;
@@ -30,6 +29,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,6 +90,7 @@ public class ArticleViewController {
         List<ArticleLable> list = articleLableService.list();
         return Result.ok(list);
     }
+
     /**
      * @return
      * @功能：根据分类统计
@@ -158,6 +162,8 @@ public class ArticleViewController {
             lqw3.eq(ArticleFollow::getUsername, byId.getCreateBy())
                     .eq(ArticleFollow::getCreateBy, username);
             ArticleFollow articleFollow = articleFollowService.getOne(lqw3);
+            LoginUser userByName = sysBaseAPI.getUserByName(username);
+            byId.setUserAvatar(userByName.getAvatar());
             if (articleFollow != null) {
                 byId.setIsFollow(false);
             } else {
@@ -184,12 +190,12 @@ public class ArticleViewController {
             List<ArticleManage> list = articleManageService.getArticleByTime(createMonth);
             e.put("data", list);
         });
-        List<List<Map<String, Object>>> list = new LinkedList<>();
-        Map<String, List<Map<String, Object>>> map = listMaps.stream().collect(Collectors.groupingBy(e -> String.valueOf(e.get("createMonth")).substring(0, 4)));
-        for (Map.Entry<String, List<Map<String, Object>>> entry : map.entrySet()) {
-            list.add(entry.getValue());
-        }
-        return Result.ok(list);
+//        List<List<Map<String, Object>>> list = new LinkedList<>();
+//        Map<String, List<Map<String, Object>>> map = listMaps.stream().collect(Collectors.groupingBy(e -> String.valueOf(e.get("createMonth")).substring(0, 4)));
+//        for (Map.Entry<String, List<Map<String, Object>>> entry : map.entrySet()) {
+//            list.add(entry.getValue());
+//        }
+        return Result.ok(listMaps);
     }
 
     /**
@@ -501,5 +507,59 @@ public class ArticleViewController {
         lqw.last("limit 3");
         List<ArticleManage> list = articleManageService.list(lqw);
         return Result.ok(list);
+    }
+
+    /**
+     * @return
+     * @功能： java检测百度是否收录网站url
+     */
+    @GetMapping("/checkBaiduIncludeUrl")
+    public Result<?> checkBaiduIncludeUrl(@RequestParam String id) {
+        String html = checkBaiduInclude("http://www.wxmin.cn/articleDetails/" + id);
+        if (!"".equals(html)) {
+            Document doc = Jsoup.parse(html);
+            Element element = doc.getElementsByClass("content_none").first();
+            if (null == element) {
+                return Result.ok("百度已经收录该网址");
+            } else {
+                return Result.error(200, "百度没有收录该网址");
+            }
+        }
+        return Result.error(200, "百度没有收录该网址");
+    }
+
+    /**
+     * java检测百度是否收录网站url
+     *
+     * @param siteurl
+     * @return
+     */
+    public static String checkBaiduInclude(String siteurl) {
+        String url = "https://www.baidu.com/s?wd=" + siteurl;
+        try {
+            Connection.Response resp = Jsoup.connect(url)
+                    .timeout(60000)
+                    .method(Connection.Method.GET)
+                    .maxBodySize(0)
+                    .followRedirects(false)
+                    .execute();
+            return new String(resp.bodyAsBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static void main(String[] args) {
+        String html = checkBaiduInclude("http://www.wxmin.cn/articleDetails/86d583137190c51e360ed48b54685672");
+        if (!"".equals(html)) {
+            Document doc = Jsoup.parse(html);
+            Element element = doc.getElementsByClass("content_none").first();
+            if (null == element) {
+                System.out.println("百度已经收录该网址");
+            } else {
+                System.out.println("百度没有收录该网址");
+            }
+        }
     }
 }

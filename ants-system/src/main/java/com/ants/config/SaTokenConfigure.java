@@ -40,7 +40,7 @@ public class SaTokenConfigure implements WebMvcConfigurer {
         releaseList.add("/articleView/**");
         releaseList.add("/sys/duplicate/check");
         releaseList.add("/mail/tool/sendCaptcha");
-        releaseList.add("/wallpaper/list");
+        releaseList.add("/wallpaper/listAll");
 
         // 注册路由拦截器，自定义验证规则
         registry.addInterceptor(new SaRouteInterceptor((req, res, handler) -> {
