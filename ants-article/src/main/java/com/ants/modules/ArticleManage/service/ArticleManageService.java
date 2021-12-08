@@ -16,7 +16,7 @@ public interface ArticleManageService extends IService<ArticleManage> {
 
     List<ArticleManageVo> initArticleSort();
 
-    List<ArticleManageVo> initArticleLable();
+    List<ArticleManageVo> initArticleLable(String username);
 
     List<Map<String, Object>> articleGroupByCreateTime();
 

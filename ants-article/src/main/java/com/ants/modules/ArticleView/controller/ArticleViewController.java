@@ -96,8 +96,8 @@ public class ArticleViewController {
      * @功能：根据分类统计
      */
     @GetMapping("/getLableStatistics")
-    public Result<?> getLableStatistics() {
-        List<ArticleManageVo> list = articleManageService.initArticleLable();
+    public Result<?> getLableStatistics(@RequestParam String username) {
+        List<ArticleManageVo> list = articleManageService.initArticleLable(username);
         return Result.ok(list);
     }
 
@@ -142,6 +142,8 @@ public class ArticleViewController {
         List<ArticleManage> list = new ArrayList<>();
         ArticleManage byId = articleManageService.getById(id);
         boolean login = StpUtil.isLogin();
+        LoginUser userByName = sysBaseAPI.getUserByName(byId.getCreateBy());
+        byId.setUserAvatar(userByName.getAvatar());
         if (login) {
             String username = StpUtil.getLoginIdAsString();// 获取当前会话账号id, 并转化为`String`类型
             LambdaQueryWrapper<ArticleLikeCollection> lqw = new LambdaQueryWrapper<>();
@@ -162,8 +164,6 @@ public class ArticleViewController {
             lqw3.eq(ArticleFollow::getUsername, byId.getCreateBy())
                     .eq(ArticleFollow::getCreateBy, username);
             ArticleFollow articleFollow = articleFollowService.getOne(lqw3);
-            LoginUser userByName = sysBaseAPI.getUserByName(username);
-            byId.setUserAvatar(userByName.getAvatar());
             if (articleFollow != null) {
                 byId.setIsFollow(false);
             } else {

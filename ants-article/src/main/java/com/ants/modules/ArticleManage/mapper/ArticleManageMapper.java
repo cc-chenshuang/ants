@@ -20,7 +20,7 @@ public interface ArticleManageMapper extends BaseMapper<ArticleManage> {
 
     List<ArticleManageVo> initArticleSort();
 
-    List<ArticleManageVo> initArticleLable();
+    List<ArticleManageVo> initArticleLable(@Param("username") String username);
 
     List<Map<String, Object>> articleGroupByCreateTime();
 

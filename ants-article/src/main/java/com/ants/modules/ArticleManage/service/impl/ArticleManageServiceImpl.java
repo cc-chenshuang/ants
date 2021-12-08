@@ -28,8 +28,8 @@ public class ArticleManageServiceImpl extends ServiceImpl<ArticleManageMapper, A
     }
 
     @Override
-    public List<ArticleManageVo> initArticleLable() {
-        return articleManageMapper.initArticleLable();
+    public List<ArticleManageVo> initArticleLable(String username) {
+        return articleManageMapper.initArticleLable(username);
     }
 
     @Override

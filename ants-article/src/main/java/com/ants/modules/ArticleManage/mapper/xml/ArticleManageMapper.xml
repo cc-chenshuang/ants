@@ -25,22 +25,16 @@
     </select>
     <select id="initArticleLable" resultType="com.ants.modules.ArticleManage.vo.ArticleManageVo">
         SELECT
-        COUNT( a.article_lable ) number,
-        b.`name` value,
-	    b.id
+            a.id id,
+            a.NAME `value`,
+            SUM( 1 ) number
         FROM
-        (
-        SELECT
-        SUBSTRING_INDEX( SUBSTRING_INDEX( a.article_lable, ',', b.help_topic_id + 1 ), ',', - 1 ) AS article_lable
-        FROM
-        `article_manage` AS a
-        JOIN mysql.help_topic AS b ON b.help_topic_id <![CDATA[ < ]]> ( length( a.article_lable ) - length( REPLACE ( a.article_lable, ',', '' ) ) + 1 )
+            article_lable a
+            LEFT JOIN article_manage b ON FIND_IN_SET( a.id, b.article_lable )
         WHERE
-        a.del_flag = '0'
-        ) a
-        INNER JOIN ( SELECT id, `name` FROM article_lable ) b ON a.article_lable = b.id
+            a.create_by = #{username}
         GROUP BY
-        a.article_lable
+            a.id
     </select>
     <select id="articleGroupByCreateTime" resultType="java.util.Map">
         SELECT LEFT
